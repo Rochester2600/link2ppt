@@ -63,14 +63,14 @@ def screenshot(url):
     outputfile = "url.pdf"  #TODO strip!!
     commands = ["wkhtmltopdf", url, outputfile]
     exe = subprocess.Popen(commands, stdout=subprocess.PIPE)
-            out, err = exe.communicate()
-            if exe.returncode != 0:
-                logging.debug(
-                    "Error executing shell command: \n"
-                    "Output\n%s\n"
-                    "Errors:\n%s\n"
-                    % (out, err)
-                )
+    out, err = exe.communicate()
+    if exe.returncode != 0:
+        logging.debug(
+            "Error executing shell command: \n"
+            "Output\n%s\n"
+            "Errors:\n%s\n"
+            % (out, err)
+        )
 
     print("Incomplete")
 
