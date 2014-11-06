@@ -40,8 +40,9 @@ def main():
     ## -c command line url, author (autodate)
     ### if command, parse line input, add date
 
-    prs = pptx.Presentation()
-    title_slide_layout = prs.slide_layouts[0]
+    #prs = pptx.Presentation()
+    prs = Presentation("template.pptx")
+    title_slide_layout = prs.slide_layouts[1]
     for line in csvobj:
         slide = prs.slides.add_slide(title_slide_layout)
         title = slide.shapes.title
