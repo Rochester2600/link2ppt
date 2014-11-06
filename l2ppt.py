@@ -65,7 +65,7 @@ def parse_csv(file):
                 row.append(sspath)
             else:
                 logging.error("Screenshot failed")
-            csv.append(row)  # test
+            csvobj.append(row)  # test
     return csvobj
 
 
