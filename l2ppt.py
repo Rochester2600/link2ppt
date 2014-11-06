@@ -9,14 +9,7 @@
 
 import csv, argparse, subprocess
 import logging
-
-
-class ClassName(object):
-    """2600 Powerpoint CLass"""
-    def __init__(self, arg):
-        super(ClassName, self).__init__()
-        self.arg = arg
-
+import pptx
 
 def main():
     # Handle arguments
@@ -42,23 +35,38 @@ def main():
     ## [default] file
     if args.csv:
         ### if file, then for each line do parse csv
-        parse_csv(args.csv)
+        csvobj = parse_csv(args.csv)
 
     ## -c command line url, author (autodate)
     ### if command, parse line input, add date
 
-    print("hello")
+    prs = pptx.Presentation()
+    title_slide_layout = prs.slide_layouts[0]
+    for line in csvobj:
+        slide = prs.slides.add_slide(title_slide_layout)
+        title = slide.shapes.title
+        subtitle = slide.placeholders[1]
+        title.text = "URL TEST"
+        subtitle.text = line[0]
+    prs.save('2600Report.pptx')
+
 
 
 def parse_csv(file):
     # is csv file?
+    csvobj = []
     with open(file, 'rb') as csvfile:
         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in urllist:
             ## If url TODO
-            ss = screenshot(row[0])
-
-            print(row)  # test
+            sspath = screenshot(row[0])
+            if sspath:
+                logging.debug("Screenshot complete")
+                row.append(sspath)
+            else:
+                logging.error("Screenshot failed")
+            csv.append(row)  # test
+    return csvobj
 
 
 def screenshot(url):
@@ -73,10 +81,12 @@ def screenshot(url):
             "Error executing shell command: \n"
             "Output\n%s\n"
             "Errors:\n%s\n"
+            "Make sure you are running with an X session"
             % (out, err)
         )
+        return None
     else:
-        return(outputfile)
+        return outputfile
 
     print("Incomplete")
 
