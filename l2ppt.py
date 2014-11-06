@@ -57,8 +57,8 @@ def main():
         slide = prs.slides.add_slide(title_slide_layout)
         title = slide.shapes.title
         subtitle = slide.placeholders[1]
-        title.text = "URL TEST"
-        subtitle.text = line[0]
+        title.text = line["title"]
+        subtitle.text = line["url"]
     prs.save('2600Report.pptx')
 
 def get_pocket():
