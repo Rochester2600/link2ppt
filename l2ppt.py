@@ -65,7 +65,11 @@ def get_pocket():
     print("TODO")
 
 def get_title(url):
-    soup = BeautifulSoup(urllib2.urlopen(url))
+    try:
+        soup = BeautifulSoup(urllib2.urlopen(url))
+    except:
+        logging.error("URL: %s had an error" % url)
+        return "Blank"
     return soup.title.string
 
 
