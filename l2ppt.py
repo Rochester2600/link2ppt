@@ -7,7 +7,7 @@
 # CSV format:
 # url, date, authors
 
-import csv
+import csv, argparse, subprocess
 
 
 class ClassName(object):
@@ -59,7 +59,19 @@ def parse_csv(file):
 
 def screenshot(url):
     # screenshot url
-    ##TODO screenshot library
+    ## http://wkhtmltopdf.org/
+    outputfile = "url.pdf"  #TODO strip!!
+    commands = ["wkhtmltopdf", url, outputfile]
+    exe = subprocess.Popen(commands, stdout=subprocess.PIPE)
+            out, err = exe.communicate()
+            if exe.returncode != 0:
+                logging.debug(
+                    "Error executing shell command: \n"
+                    "Output\n%s\n"
+                    "Errors:\n%s\n"
+                    % (out, err)
+                )
+
     print("Incomplete")
 
 
