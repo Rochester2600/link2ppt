@@ -8,6 +8,7 @@
 # url, date, authors
 
 import csv, argparse, subprocess
+import logging
 
 
 class ClassName(object):
