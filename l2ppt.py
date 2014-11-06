@@ -10,6 +10,9 @@
 import csv, argparse, subprocess
 import logging
 import pptx
+import pocket
+import urllib2
+from BeautifulSoup import BeautifulSoup
 
 def main():
     # Handle arguments
@@ -24,6 +27,9 @@ def main():
     parser.add_argument('-x',
         dest='ppt',
         help="Update an existing ppt")
+    parser.add_argument('-p',
+        dest='pocket',
+        help="Update an existing ppt")
 
     args = parser.parse_args()
 
@@ -36,6 +42,10 @@ def main():
     if args.csv:
         ### if file, then for each line do parse csv
         csvobj = parse_csv(args.csv)
+    elif args.pocket:
+        getpocket()
+    else:
+        print("Try -h for help")
 
     ## -c command line url, author (autodate)
     ### if command, parse line input, add date
@@ -51,6 +61,12 @@ def main():
         subtitle.text = line[0]
     prs.save('2600Report.pptx')
 
+def get_pocket():
+    print("TODO")
+
+def get_title(url):
+    soup = BeautifulSoup(urllib2.urlopen(url))
+    return soup.title.string
 
 
 def parse_csv(file):
@@ -60,13 +76,29 @@ def parse_csv(file):
         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in urllist:
             ## If url TODO
-            sspath = screenshot(row[0])
+            record = {}
+            record["url"] = row[0]
+            try:
+                record["author"] = row[1]
+            except IndexError:
+                record["author"] = None
+
+            try:
+                record["author"] = row[2]
+            except IndexError:
+                record["date"] = None
+            sspath = screenshot(record["url"])
+
             if sspath:
                 logging.debug("Screenshot complete")
-                row.append(sspath)
+                record["screenshot"] = sspath
+                #row.append(sspath)
             else:
                 logging.error("Screenshot failed")
-            csvobj.append(row)  # test
+                record["screenshot"] = None
+            record["title"] = get_title(row[0])
+
+            csvobj.append(record)  # test
     return csvobj
 
 
