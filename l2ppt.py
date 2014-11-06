@@ -41,7 +41,7 @@ def main():
     ### if command, parse line input, add date
 
     #prs = pptx.Presentation()
-    prs = Presentation("template.pptx")
+    prs = pptx.Presentation("template.pptx")
     title_slide_layout = prs.slide_layouts[1]
     for line in csvobj:
         slide = prs.slides.add_slide(title_slide_layout)
