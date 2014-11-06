@@ -25,15 +25,21 @@ except:
     print("Missing beautifulsoup module")
     sys.exit()
 
+from guppy import hpy
+h = hpy()
+print h.heap()
+
 OUTPUT = ""
 
+
 def main():
+    global OUTPUT
     # Handle arguments
     parser = argparse.ArgumentParser(
         description='Convert links to ppt')
     parser.add_argument("-f",
-        dest='csv',
-        help='csv file')
+                        dest='csv',
+                        help='csv file')
     #parser.add_argument('-c',
     #    dest='line,
     #    help='Command line import')
@@ -41,11 +47,11 @@ def main():
     #    dest='output,
     #    help='Command line import')
     parser.add_argument('-x',
-        dest='ppt',
-        help="Update an existing ppt")
+                        dest='ppt',
+                        help="Update an existing ppt")
     parser.add_argument('-p',
-        dest='pocket',
-        help="Update an existing ppt")
+                        dest='pocket',
+                        help="Update an existing ppt")
 
     args = parser.parse_args()
     OUTPUT = "2600report.pptx"
@@ -59,15 +65,13 @@ def main():
         ### if file, then for each line do parse csv
         parse_csv(args.csv)
     elif args.pocket:
-        getpocket()
+        get_pocket()
     else:
         print("Try -h for help")
 
-    ## -c command line url, author (autodate)
-    ### if command, parse line input, add date
 
-    #prs = pptx.Presentation()
 def add_slide(line):
+    global OUTPUT
     '''Needs a dict of title and url at least'''
     prs = pptx.Presentation(OUTPUT)
     title_slide_layout = prs.slide_layouts[1]
@@ -83,24 +87,27 @@ def add_slide(line):
 def get_pocket():
     print("TODO")
 
+
 def get_title(url):
     try:
-        f = urllib2.urlopen(url)
+        # 3s timeout
+        f = urllib2.urlopen(url, tmeout=3000)
         soup = BeautifulSoup(f)
-        f.close()  #Trying to limit memory usage
+        f.close()
+
+        if soup.title.string:
+            logging.debug("Title found as: %s" % soup.title.string)
+            return soup.title.string
+        else:
+            return "No title found"
     except:
         logging.error("URL: %s had an error" % url)
         return "Blank"
-    logging.debug("Title found as: %s" % soup.title.string)
-    if soup.title.string:
-        return soup.title.string
-    else:
-        return "No title found"
 
 
 def parse_csv(file):
     # is csv file?
-    csvobj = []
+    #csvobj = []
     with open(file, 'rb') as csvfile:
         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in urllist:
@@ -116,7 +123,8 @@ def parse_csv(file):
                 record["date"] = row[2]
             except IndexError:
                 record["date"] = None
-            sspath = screenshot(record["url"])
+            #sspath = screenshot(record["url"]) ## Disable mem issue
+            sspath = None
 
             if sspath:
                 logging.debug("Screenshot complete")
@@ -130,28 +138,24 @@ def parse_csv(file):
             ## add to slide
             add_slide(record)
 
-            csvobj.append(record)  # test
-    return csvobj
-
 
 def screenshot(url):
     # screenshot url
     ## http://wkhtmltopdf.org/
-    outputfile = "%s.pdf" % url  #TODO strip!!
+    outputfile = "%s.pdf" % url  # TODO strip!!
     commands = ["wkhtmltopdf", url, outputfile]
-    exe = subprocess.Popen(commands, stdout=subprocess.PIPE)
-    out, err = exe.communicate()
-    if exe.returncode != 0:
-        logging.debug(
-            "Error executing shell command: \n"
-            "Output\n%s\n"
-            "Errors:\n%s\n"
-            "Make sure you are running with an X session"
-            % (out, err)
-        )
+    try:
+        if subprocess.call(commands) < 1:
+            logging.debug(
+                "Error executing shell command: \n"
+                "Make sure you are running with an X session"
+            )
+            return None
+        else:
+            return outputfile
+    except:
+        logging.debug("Exception caught for wkhtmltopdf")
         return None
-    else:
-        return outputfile
 
 
 if __name__ == '__main__':
