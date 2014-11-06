@@ -10,7 +10,10 @@
 import csv, argparse, subprocess
 import logging
 import pptx
-import pocket
+try:
+    import pocket
+except:
+    print("No pocket support")
 import urllib2
 from BeautifulSoup import BeautifulSoup
 
@@ -70,7 +73,11 @@ def get_title(url):
     except:
         logging.error("URL: %s had an error" % url)
         return "Blank"
-    return soup.title.string
+    logging.debug("Title found as: %s" % soup.title.string)
+    if soup.title.string:
+        return soup.title.string
+    else:
+        return "No title found"
 
 
 def parse_csv(file):

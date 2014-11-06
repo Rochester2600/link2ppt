@@ -13,3 +13,10 @@ Takes in a list of urls and automatically generates a powerpoint from them
 
 * finish pocket support
 * Decide how to embed PDF into PPT
+
+== Requirements == 
+* Python-pptx
+ pip install python-pptx
+* wkhtmltopdf
+ apt-get install wkhtmltopdf
+* BeautifulSoup
