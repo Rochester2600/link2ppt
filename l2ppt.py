@@ -8,14 +8,24 @@
 # url, date, authors
 
 import csv, argparse, subprocess
-import logging
-import pptx
+import logging, sys
+try:
+    import pptx
+except:
+    print("No pptx module!")
+    sys.exit()
 try:
     import pocket
 except:
     print("No pocket support")
 import urllib2
-from BeautifulSoup import BeautifulSoup
+try:
+    from BeautifulSoup import BeautifulSoup
+except:
+    print("Missing beautifulsoup module")
+    sys.exit()
+
+OUTPUT = ""
 
 def main():
     # Handle arguments
@@ -27,6 +37,9 @@ def main():
     #parser.add_argument('-c',
     #    dest='line,
     #    help='Command line import')
+    #parser.add_argument('-o',
+    #    dest='output,
+    #    help='Command line import')
     parser.add_argument('-x',
         dest='ppt',
         help="Update an existing ppt")
@@ -35,7 +48,7 @@ def main():
         help="Update an existing ppt")
 
     args = parser.parse_args()
-
+    OUTPUT = "2600report.pptx"
     #if args.ppt:
     #    ## -x update an existing pptp
     #    ppt = args.ppt
@@ -44,7 +57,7 @@ def main():
     ## [default] file
     if args.csv:
         ### if file, then for each line do parse csv
-        csvobj = parse_csv(args.csv)
+        parse_csv(args.csv)
     elif args.pocket:
         getpocket()
     else:
@@ -54,22 +67,27 @@ def main():
     ### if command, parse line input, add date
 
     #prs = pptx.Presentation()
-    prs = pptx.Presentation("template.pptx")
+def add_slide(line):
+    '''Needs a dict of title and url at least'''
+    prs = pptx.Presentation(OUTPUT)
     title_slide_layout = prs.slide_layouts[1]
-    for line in csvobj:
-        slide = prs.slides.add_slide(title_slide_layout)
-        title = slide.shapes.title
-        subtitle = slide.placeholders[1]
-        title.text = line["title"]
-        subtitle.text = line["url"]
-    prs.save('2600Report.pptx')
+    #for line in csvobj:
+    slide = prs.slides.add_slide(title_slide_layout)
+    title = slide.shapes.title
+    subtitle = slide.placeholders[1]
+    title.text = line["title"]
+    subtitle.text = line["url"]
+    prs.save(OUTPUT)
+
 
 def get_pocket():
     print("TODO")
 
 def get_title(url):
     try:
-        soup = BeautifulSoup(urllib2.urlopen(url))
+        f = urllib2.urlopen(url)
+        soup = BeautifulSoup(f)
+        f.close()  #Trying to limit memory usage
     except:
         logging.error("URL: %s had an error" % url)
         return "Blank"
@@ -95,7 +113,7 @@ def parse_csv(file):
                 record["author"] = None
 
             try:
-                record["author"] = row[2]
+                record["date"] = row[2]
             except IndexError:
                 record["date"] = None
             sspath = screenshot(record["url"])
@@ -108,6 +126,9 @@ def parse_csv(file):
                 logging.error("Screenshot failed")
                 record["screenshot"] = None
             record["title"] = get_title(row[0])
+
+            ## add to slide
+            add_slide(record)
 
             csvobj.append(record)  # test
     return csvobj
@@ -131,11 +152,6 @@ def screenshot(url):
         return None
     else:
         return outputfile
-
-    print("Incomplete")
-
-
-# add slide(url, screenshot)
 
 
 if __name__ == '__main__':
