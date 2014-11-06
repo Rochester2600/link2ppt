@@ -54,13 +54,16 @@ def parse_csv(file):
     with open(file, 'rb') as csvfile:
         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in urllist:
+            ## If url TODO
+            ss = screenshot(row[0])
+
             print(row)  # test
 
 
 def screenshot(url):
     # screenshot url
     ## http://wkhtmltopdf.org/
-    outputfile = "url.pdf"  #TODO strip!!
+    outputfile = "%s.pdf" % url  #TODO strip!!
     commands = ["wkhtmltopdf", url, outputfile]
     exe = subprocess.Popen(commands, stdout=subprocess.PIPE)
     out, err = exe.communicate()
@@ -71,6 +74,8 @@ def screenshot(url):
             "Errors:\n%s\n"
             % (out, err)
         )
+    else:
+        return(outputfile)
 
     print("Incomplete")
 
