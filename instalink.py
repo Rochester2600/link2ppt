@@ -21,6 +21,8 @@ class Instalink:
         self.csecret = creds[1]
         self.email = creds[2]
         self.password = creds[3]
+        self.osecret = None
+        self.otoken = None
 
     def _xauth(self):
         # try to authenticate with instapaper
