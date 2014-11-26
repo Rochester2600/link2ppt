@@ -9,6 +9,7 @@
 import argparse
 import requests
 import logging
+import time
 from requests_oauthlib import OAuth1
 
 __BASE__ = "https://www.instapaper.com"
@@ -60,11 +61,18 @@ class Instalink:
         from the instapaper archive'''
         url = __ENDPOINT__ + "bookmarks/list"
         data = {
-            "limit": 500,
+            "limit": 50, ##TODO
             "folder_id": folder
         }
         r= self._request(url, data=data, auth=self._oauth())
         logging.debug(r.text)
+        for b in r.json()["bookmarks"]:
+            print("TITLE:")
+            print(b["title"])
+            print("TIME:")
+            print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(b["time"])))
+            print("HIGHLIGHTS")
+            print(get_highlights(b["bookmark_id"]))
         print(r.json())
 
     def get_highlights(self, bookmark_id):
