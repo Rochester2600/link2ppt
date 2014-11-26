@@ -47,6 +47,7 @@ class Instalink:
             data=data,
             auth=auth
             )
+        ## TODO add status code check
         resp = str(r.text)
         oauth_tokens = resp.split("&")
         self.osecret = oauth_tokens[0].split("=")[1]
@@ -61,7 +62,7 @@ class Instalink:
             "limit": 500,
             "folder_id": folder
         }
-        r= self._request(url, data=data, auth=self._oauth)
+        r= self._request(url, data=data, auth=self._oauth())
         logging.debug(r.text)
 
 
@@ -89,8 +90,7 @@ def main():
 
     args = parser.parse_args()
 
-    with open(args.creds) as f:
-        creds = f.readlines()
+    creds = open(args.creds,'r').read().splitlines()
 
     ipaper = Instalink(creds)
     ipaper.login()
