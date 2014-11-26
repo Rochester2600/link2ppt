@@ -38,8 +38,8 @@ class Instalink:
         return oauth
 
     def login(self):
-        data = _xauth()
-        auth = _oauth()
+        data = self._xauth()
+        auth = self._oauth()
         r = requests.post(
             "https://www.instapaper.com/api/1.1/oauth/access_token",
             data=body,
@@ -59,7 +59,7 @@ class Instalink:
             "limit": 500,
             "folder_id": folder
         }
-        r= _request(url, data=data, auth=_oauth)
+        r= _request(url, data=data, auth=self._oauth)
         logging.debug(r.text)
 
 
