@@ -23,6 +23,7 @@ class Instalink:
         self.password = creds[3]
         self.osecret = None
         self.otoken = None
+        logging.basicConfig(level=logging.DEBUG)
 
     def _xauth(self):
         # try to authenticate with instapaper
@@ -64,6 +65,19 @@ class Instalink:
         }
         r= self._request(url, data=data, auth=self._oauth())
         logging.debug(r.text)
+        print(r.json())
+
+    def get_highlights(self, bookmark_id):
+        url = __ENDPOINT__ + "bookmarks/" + bookmark_id + "/highlights"
+        r = self._request(url, auth=self._oauth())
+        logging.debug(r.json())
+        return r.json()
+
+    def get_text(self, bookmark_id):
+        url = __ENDPOINT__ + "bookmarks/get_text"
+        data = {"bookmark_id": bookmark_id}
+        r = self._request(url, data=data, auth=self._oauth())
+        logging.debug(r.json())
 
 
     def _request(self, url, data=None, auth=None):
@@ -72,9 +86,7 @@ class Instalink:
 
     def getfolders(self):
         folderurl = __BASE__ + "/api/" + __API_VERSION__ + "/folders/list"
-
-    def _list(self, limit, folder_id, have, highlights):
-        logging.debug("_list")
+        ## TODO
 
     def gettext(self, bookmark_id):
         '''Return the text from the bookmarks'''
