@@ -71,17 +71,16 @@ class Instalink:
             print(b["title"])
             print("TIME:")
             print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(b["time"])))
-            #print("HIGHLIGHTS")
-            #print(self.get_highlights(b["bookmark_id"]))
+            print("HIGHLIGHTS")
+            print(self.get_highlights(b["bookmark_id"]))
         for h in r.json()["highlights"]:
             print("HIGHLIGHTS:")
             print(h)
 
-        #print(r.json())
-
     def get_highlights(self, bookmark_id):
         url = __ENDPOINT__ + "bookmarks/" + str(bookmark_id) + "/highlights"
-        r = self._request(url, auth=self._oauth())
+        ## I don't know why but this only works by using a GET request
+        r = request.get(url, auth=self._oauth())
         logging.debug(r.json())
         return r.json()
 
@@ -92,7 +91,7 @@ class Instalink:
         logging.debug(r.json())
 
 
-    def _request(self, url, data={""}, auth=self._oauth()):
+    def _request(self, url, data, auth):
         r = requests.post(url, data=data, auth=auth) ##TODO clean up
         return r
 
