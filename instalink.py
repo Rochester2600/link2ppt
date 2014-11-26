@@ -31,7 +31,7 @@ class Instalink:
         return header
 
     def _oauth(self):
-        if not self.osecret and self.otoken:
+        if not self.osecret and not self.otoken:
             oauth = OAuth1(self.ckey, self.csecret)
         elif self.osecret and self.otoken:
             oauth = OAuth1(self.ckey, self.csecret, self.otoken, self.osecret)
@@ -42,9 +42,9 @@ class Instalink:
     def login(self):
         data = self._xauth()
         auth = self._oauth()
-        r = requests.post(
+        r = self._request(
             "https://www.instapaper.com/api/1.1/oauth/access_token",
-            data=body,
+            data=data,
             auth=auth
             )
         resp = str(r.text)
@@ -61,7 +61,7 @@ class Instalink:
             "limit": 500,
             "folder_id": folder
         }
-        r= _request(url, data=data, auth=self._oauth)
+        r= self._request(url, data=data, auth=self._oauth)
         logging.debug(r.text)
 
 
