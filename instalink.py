@@ -71,12 +71,16 @@ class Instalink:
             print(b["title"])
             print("TIME:")
             print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(b["time"])))
-            print("HIGHLIGHTS")
-            print(get_highlights(b["bookmark_id"]))
-        print(r.json())
+            #print("HIGHLIGHTS")
+            #print(self.get_highlights(b["bookmark_id"]))
+        for h in r.json()["highlights"]:
+            print("HIGHLIGHTS:")
+            print(h)
+
+        #print(r.json())
 
     def get_highlights(self, bookmark_id):
-        url = __ENDPOINT__ + "bookmarks/" + bookmark_id + "/highlights"
+        url = __ENDPOINT__ + "bookmarks/" + str(bookmark_id) + "/highlights"
         r = self._request(url, auth=self._oauth())
         logging.debug(r.json())
         return r.json()
@@ -88,7 +92,7 @@ class Instalink:
         logging.debug(r.json())
 
 
-    def _request(self, url, data=None, auth=None):
+    def _request(self, url, data={""}, auth=self._oauth()):
         r = requests.post(url, data=data, auth=auth) ##TODO clean up
         return r
 
