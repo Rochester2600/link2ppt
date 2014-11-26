@@ -8,10 +8,12 @@
 #   ilink.getlinks(daterange)
 import argparse
 import requests
+import logging
 from requests_oauthlib import OAuth1
 
 __BASE__ = "https://www.instapaper.com"
 __API_VERSION__ = "1.1"
+__ENDPOINT__ = __BASE__ + "/api/" + __API_VERSION__ + "/"
 
 class Instalink:
     def __init__(self, creds):
@@ -22,7 +24,7 @@ class Instalink:
 
     def _xauth(self):
         # try to authenticate with instapaper
-        print("xauth")
+        logging.debug("xauth")
         header = {'x_auth_username': self.email, 'x_auth_password': self.password} ##TODO do I need the xauth client type here?
         return header
 
@@ -49,33 +51,31 @@ class Instalink:
         self.otoken = oauth_tokens[1].split("=")[1]
 
 
-    def getlinks(self, folder=None):
+    def getlinks(self, folder="archive"):
         '''Returns a list of links from the
-        instagram account. Folder is optional'''
-        # requests.post(__BASE__ + "/" + __API_VERSION__ + )
-        print("getlinks")
-        url = ""
+        from the instapaper archive'''
+        url = __ENDPOINT__ + "bookmarks/list"
         data = {
             "limit": 500,
-            "folder_id": "archive"
+            "folder_id": folder
         }
-        _request(url, data=data, auth=_oauth)
+        r= _request(url, data=data, auth=_oauth)
+        logging.debug(r.text)
+
 
     def _request(self, url, data=None, auth=None):
-        requests.post(url, data=data, auth=auth) ##TODO clean up
+        r = requests.post(url, data=data, auth=auth) ##TODO clean up
+        return r
 
     def getfolders(self):
         folderurl = __BASE__ + "/api/" + __API_VERSION__ + "/folders/list"
 
     def _list(self, limit, folder_id, have, highlights):
-        print("_list")
+        logging.debug("_list")
 
     def gettext(self, bookmark_id):
         '''Return the text from the bookmarks'''
-        print("gettext")
-
-
-
+        logging.debug("gettext")
 
 
 def main():
@@ -91,6 +91,8 @@ def main():
         creds = f.readlines()
 
     ipaper = Instalink(creds)
+    ipaper.login()
+    ipaper.getlinks()
 
 # init main
 if __name__ == '__main__':
