@@ -81,7 +81,7 @@ class Instalink:
             link["starred"] = b["starred"]
             # Get the highlights text if there is any
             highlights = list(
-                h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"])
+                h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"]
                 )
             link["highlights"] = highlights
             logging.debug(link)
