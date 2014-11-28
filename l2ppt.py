@@ -85,8 +85,8 @@ def add_slide(line):
         text_frame = shape.text_frame
     text_frame.clear()
     title = slide.shapes.title
-    subtitle.text = line["highlights"]
     content = slide.placeholders[1]
+    content.text = line["highlights"]
     for para_str in line["highlights"]:
         p = text_frame.add_paragraph()
         p.text = para_str
