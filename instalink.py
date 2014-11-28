@@ -1,4 +1,4 @@
-#!/usr/bin/python
+open#!/usr/bin/python
 # Title: InstaLink
 # Description: Collect links and highlights from Instapaper.
 # Usage:
@@ -87,7 +87,7 @@ class Instalink:
             logging.debug(link)
             links.append(link)
 
-        return(link)
+        return(links)
 
 
 
