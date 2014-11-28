@@ -86,9 +86,9 @@ def add_slide(line):
     text_frame.clear()
     title = slide.shapes.title
     content = slide.placeholders[1]
-    bullets = "\n".join(line["highlights"])
+    #bullets = "\n".join(line["highlights"])
     #bullets += "\n" + line["url"]
-    content.text = bullets
+    content.text = "\n".join(line["highlights"])
     title.text = line["title"]
     prs.save(OUTPUT)
 
