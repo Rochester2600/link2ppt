@@ -25,9 +25,9 @@ except:
     print("Missing beautifulsoup module")
     sys.exit()
 
-from guppy import hpy
-h = hpy()
-print h.heap()
+#from guppy import hpy
+#h = hpy()
+#print h.heap()
 
 OUTPUT = ""
 CREDS = "./creds"
@@ -95,6 +95,7 @@ def add_slide(line):
 
 
 def get_instapaper(creds):
+    f = open(creds).read().splitlines()
     ilink = instalink.Instalink(creds)
     ilink.login()
     il = ilink.getlinks()
