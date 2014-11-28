@@ -9,6 +9,7 @@
 
 import csv, argparse, subprocess
 import logging, sys
+import time
 try:
     import pptx
 except:
@@ -23,11 +24,6 @@ try:
     from BeautifulSoup import BeautifulSoup
 except:
     print("Missing beautifulsoup module")
-    sys.exit()
-
-#from guppy import hpy
-#h = hpy()
-#print h.heap()
 
 OUTPUT = ""
 CREDS = "./creds"
@@ -56,13 +52,8 @@ def main():
 
     args = parser.parse_args()
     OUTPUT = args.output
-    CREDS = args.icreds
-    #if args.ppt:
-    #    ## -x update an existing pptp
-    #    ppt = args.ppt
-    #else:
-    #    ppt = Presentation()
-    ## [default] file
+    #CREDS = args.icreds ## TODO remove
+
     if args.csv:
         ### if file, then for each line do parse csv
         parse_csv(args.csv)
@@ -75,21 +66,29 @@ def main():
 def add_slide(line):
     global OUTPUT
     '''Needs a dict of title and url at least
-    url'''
+    '''
+    ## TODO this should handle instapaper input
+    ##  or a CSV. Right now it's only instapaper
     prs = pptx.Presentation(OUTPUT)
-    title_slide_layout = prs.slide_layouts[1]
+    title_slide_layout = prs.slide_layouts[1] # title / content
     slide = prs.slides.add_slide(title_slide_layout)
+    
+    # Find the text share to add content
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
         text_frame = shape.text_frame
     text_frame.clear()
-    title = slide.shapes.title
     for para_str in line["highlights"]:
         p = text_frame.add_paragraph()
         p.text = para_str
     text_frame.add_paragraph().text = line["url"]
+
+    # Set title
+    title = slide.shapes.title
     title.text = line["title"]
+
+    # Save to output
     prs.save(OUTPUT)
 
 
@@ -99,7 +98,9 @@ def get_instapaper(creds):
     ilink.login()
     il = ilink.getlinks()
     links = ilink.handlelinks(il)
-    for s in links:
+    # Only get the last 30 days
+    last30 = list(s for s in links if s["time"] > time.time() - 2595600)
+    for s in last30:
         add_slide(s)
 
 def get_title(url):

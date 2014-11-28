@@ -24,7 +24,7 @@ class Instalink:
         self.password = creds[3]
         self.osecret = None
         self.otoken = None
-        logging.basicConfig(level=logging.DEBUG)
+        #logging.basicConfig(level=logging.DEBUG)
 
     def _xauth(self):
         # try to authenticate with instapaper
@@ -62,7 +62,7 @@ class Instalink:
         from the instapaper archive'''
         url = __ENDPOINT__ + "bookmarks/list"
         data = {
-            "limit": 50, ## TODO
+            "limit": 500, ## TODO
             "folder_id": folder
         }
         r= self._request(url, data=data, auth=self._oauth())
