@@ -76,6 +76,7 @@ class Instalink:
         print(r)
         links = []
         for b in r["bookmarks"]:
+            link = []
             link["title"] = b["title"]
             link["url"] = b["url"]
             link["starred"] = b["starred"]
