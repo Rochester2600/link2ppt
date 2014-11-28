@@ -42,7 +42,7 @@ def main():
                         dest='csv',
                         help='csv file')
     parser.add_argument('-i',
-        dest='icreds,
+        dest='icreds',
         help='File with creds for instapaper')
     #parser.add_argument('-o',
     #    dest='output,
