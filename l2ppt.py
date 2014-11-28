@@ -15,9 +15,9 @@ except:
     print("No pptx module!")
     sys.exit()
 try:
-    import pocket
+    import instalink
 except:
-    print("No pocket support")
+    print("No Instapaper support")
 import urllib2
 try:
     from BeautifulSoup import BeautifulSoup
@@ -49,12 +49,12 @@ def main():
     parser.add_argument('-x',
                         dest='ppt',
                         help="Update an existing ppt")
-    parser.add_argument('-p',
-                        dest='pocket',
-                        help="Update an existing ppt")
+    parser.add_argument('-o',
+                        dest='output',
+                        help="Name of output PPTX file")
 
     args = parser.parse_args()
-    OUTPUT = "2600report.pptx"
+    OUTPUT = args.output
     #if args.ppt:
     #    ## -x update an existing pptp
     #    ppt = args.ppt
@@ -84,9 +84,8 @@ def add_slide(line):
     prs.save(OUTPUT)
 
 
-def get_pocket():
+def get_instapaper():
     print("TODO")
-
 
 def get_title(url):
     try:

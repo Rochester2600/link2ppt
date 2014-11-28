@@ -33,6 +33,7 @@ class Instalink:
         return header
 
     def _oauth(self):
+        # If we don't have a token pair then just create the request
         if not self.osecret and not self.otoken:
             oauth = OAuth1(self.ckey, self.csecret)
         elif self.osecret and self.otoken:
@@ -42,8 +43,8 @@ class Instalink:
         return oauth
 
     def login(self):
-        data = self._xauth()
-        auth = self._oauth()
+        data = self._xauth() # Get the body of the request
+        auth = self._oauth() # get the authorization header
         r = self._request(
             "https://www.instapaper.com/api/1.1/oauth/access_token",
             data=data,
@@ -61,34 +62,33 @@ class Instalink:
         from the instapaper archive'''
         url = __ENDPOINT__ + "bookmarks/list"
         data = {
-            "limit": 50, ##TODO
+            "limit": 50, ## TODO
             "folder_id": folder
         }
         r= self._request(url, data=data, auth=self._oauth())
         logging.debug(r.text)
-        for b in r.json()["bookmarks"]:
-            print("TITLE:")
-            print(b["title"])
-            print("TIME:")
-            print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(b["time"])))
-            print("HIGHLIGHTS")
-            print(self.get_highlights(b["bookmark_id"]))
-        for h in r.json()["highlights"]:
-            print("HIGHLIGHTS:")
-            print(h)
 
-    def get_highlights(self, bookmark_id):
-        url = __ENDPOINT__ + "bookmarks/" + str(bookmark_id) + "/highlights"
-        ## I don't know why but this only works by using a GET request
-        r = request.get(url, auth=self._oauth())
-        logging.debug(r.json())
-        return r.json()
+        return(r.json())
 
-    def get_text(self, bookmark_id):
-        url = __ENDPOINT__ + "bookmarks/get_text"
-        data = {"bookmark_id": bookmark_id}
-        r = self._request(url, data=data, auth=self._oauth())
-        logging.debug(r.json())
+    def handlelinks(self, r):
+        ''' take in the json response a reduce it
+        down to only the necessary text'''
+        print(r)
+        links = []
+        for b in r["bookmarks"]:
+            link["title"] = b["title"]
+            link["url"] = b["url"]
+            link["starred"] = b["starred"]
+            # Get the highlights text if there is any
+            highlights = list(
+                (h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"])
+                )
+            link["highlights"] = highlights
+            logging.debug(link)
+            links.append(link)
+
+        return(link)
+
 
 
     def _request(self, url, data, auth):
