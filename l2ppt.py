@@ -96,10 +96,12 @@ def add_slide(line):
 
 def get_instapaper(creds):
     f = open(creds).read().splitlines()
-    ilink = instalink.Instalink(creds)
+    ilink = instalink.Instalink(f)
     ilink.login()
     il = ilink.getlinks()
     links = ilink.handlelinks(il)
+    for s in links:
+        add_slide(s)
 
 def get_title(url):
     try:
