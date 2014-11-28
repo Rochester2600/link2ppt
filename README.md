@@ -1,22 +1,28 @@
 link2ppt
 ========
 
-Takes in a list of urls and automatically generates a powerpoint from them
+Automatically generates a Powerpoint presentation of links and content. Designed for a monthly 2600 meeting. 
 
 ## Features:##
 
+* Collects links and highlights from an instapaper account and puts them into a PPTX
 * Takes in CSV of url, author, date and pushes into a PPTX
 * Downloads a PDF copy of the site
 * Supports using PPTX templates
 
 ##TODO:##
 
-* finish pocket support
-* Decide how to embed PDF into PPT
+* Collect from other sources besides csv and instapaper
 
 ## Requirements ##
+
 * Python-pptx
  pip install python-pptx
-* wkhtmltopdf
+* Requests
+ pip install requests
+ 
+## Optional ##
+
+* wkhtmltopdf (for pdf generation)
  apt-get install wkhtmltopdf
-* BeautifulSoup
+* BeautifulSoup (for csv import)
