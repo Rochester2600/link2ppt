@@ -30,6 +30,7 @@ h = hpy()
 print h.heap()
 
 OUTPUT = ""
+CREDS = "./creds"
 
 
 def main():
@@ -37,12 +38,12 @@ def main():
     # Handle arguments
     parser = argparse.ArgumentParser(
         description='Convert links to ppt')
-    parser.add_argument("-f",
+    parser.add_argument("-c",
                         dest='csv',
                         help='csv file')
-    #parser.add_argument('-c',
-    #    dest='line,
-    #    help='Command line import')
+    parser.add_argument('-i',
+        dest='icreds,
+        help='File with creds for instapaper')
     #parser.add_argument('-o',
     #    dest='output,
     #    help='Command line import')
@@ -55,6 +56,7 @@ def main():
 
     args = parser.parse_args()
     OUTPUT = args.output
+    CREDS = args.icreds
     #if args.ppt:
     #    ## -x update an existing pptp
     #    ppt = args.ppt
@@ -64,28 +66,39 @@ def main():
     if args.csv:
         ### if file, then for each line do parse csv
         parse_csv(args.csv)
-    elif args.pocket:
-        get_pocket()
+    elif args.icreds:
+        get_instapaper(args.icreds)
     else:
         print("Try -h for help")
 
 
 def add_slide(line):
     global OUTPUT
-    '''Needs a dict of title and url at least'''
+    '''Needs a dict of title and url at least
+    url'''
     prs = pptx.Presentation(OUTPUT)
     title_slide_layout = prs.slide_layouts[1]
-    #for line in csvobj:
     slide = prs.slides.add_slide(title_slide_layout)
+    for shape in slide.shapes:
+        if not shape.has_text_frame:
+            continue
+        text_frame = shape.text_frame
     title = slide.shapes.title
     subtitle = slide.placeholders[1]
+    text_frame.clear()
+    for para_str in line["highlights"]:
+        p = text_frame.add_paragraph()
+        p.text = para_str
     title.text = line["title"]
     subtitle.text = line["url"]
     prs.save(OUTPUT)
 
 
-def get_instapaper():
-    print("TODO")
+def get_instapaper(creds):
+    ilink = instalink.Instalink(creds)
+    ilink.login()
+    il = ilink.getlinks()
+    links = ilink.handlelinks(il)
 
 def get_title(url):
     try:

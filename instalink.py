@@ -79,6 +79,8 @@ class Instalink:
             link["title"] = b["title"]
             link["url"] = b["url"]
             link["starred"] = b["starred"]
+            # time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(1347517370))
+            link["date"] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(b["time"])
             # Get the highlights text if there is any
             highlights = list(
                 h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"]
