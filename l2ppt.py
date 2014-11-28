@@ -77,20 +77,20 @@ def add_slide(line):
     '''Needs a dict of title and url at least
     url'''
     prs = pptx.Presentation(OUTPUT)
-    title_slide_layout = prs.slide_layouts[1]
+    title_slide_layout = prs.slide_layouts[2]
     slide = prs.slides.add_slide(title_slide_layout)
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
         text_frame = shape.text_frame
-    title = slide.shapes.title
-    subtitle = slide.placeholders[1]
     text_frame.clear()
+    title = slide.shapes.title
+    subtitle.text = line["highlights"]
+    content = slide.placeholders[1]
     for para_str in line["highlights"]:
         p = text_frame.add_paragraph()
         p.text = para_str
     title.text = line["title"]
-    subtitle.text = line["url"]
     prs.save(OUTPUT)
 
 
