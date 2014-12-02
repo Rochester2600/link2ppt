@@ -51,7 +51,11 @@ def main():
                         help="Name of output PPTX file")
 
     args = parser.parse_args()
-    OUTPUT = args.output
+    if args.output:
+        OUTPUT = args.output
+    else:
+        print("Need to supply output")
+        sys.exit()
     #CREDS = args.icreds ## TODO remove
 
     if args.csv:
