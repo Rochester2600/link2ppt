@@ -69,7 +69,7 @@ def main():
     if args.ppt:
         add_slides(content)
     elif args.remark:
-        build_remarks(content, path)
+        build_remarks(content, args.remark)
     else:
         print("Output type missing. Choose -r or -p")
 
