@@ -49,7 +49,7 @@ def main():
         help='File with creds for instapaper')
     parser.add_argument('-r',
         dest="remark",
-        help="Output to remarkjs markdown")
+        help="Output to remarkjs markdown. e.g. output.md")
     #parser.add_argument('-o',
     #    dest='output,
     #    help='Command line import')
