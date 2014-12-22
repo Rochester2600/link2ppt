@@ -1,4 +1,4 @@
-open#!/usr/bin/python
+#!/usr/bin/python
 # Title: InstaLink
 # Description: Collect links and highlights from Instapaper.
 # Usage:

@@ -14,7 +14,13 @@ try:
     import pptx
 except:
     print("No pptx module!")
-    sys.exit()
+    #sys.exit()
+
+try:
+    import remark
+except:
+    print("no remark support loaded")
+
 try:
     import instalink
 except:
@@ -40,32 +46,44 @@ def main():
     parser.add_argument('-i',
         dest='icreds',
         help='File with creds for instapaper')
+    parser.add_argument('-r',
+        dest="remark",
+        help="Output to remarkjs markdown")
     #parser.add_argument('-o',
     #    dest='output,
     #    help='Command line import')
-    parser.add_argument('-x',
+    parser.add_argument('-p',
                         dest='ppt',
-                        help="Update an existing ppt")
-    parser.add_argument('-o',
-                        dest='output',
-                        help="Name of output PPTX file")
+                        help="Output to powerpoint")
 
     args = parser.parse_args()
-    if args.output:
-        OUTPUT = args.output
-    else:
-        print("Need to supply output")
-        sys.exit()
-    #CREDS = args.icreds ## TODO remove
+
+    content = []
 
     if args.csv:
-        ### if file, then for each line do parse csv
-        parse_csv(args.csv)
-    elif args.icreds:
-        get_instapaper(args.icreds)
-    else:
-        print("Try -h for help")
+       content += parse_csv(args.csv)
+    
+    if args.icreds:
+        content = get_instapaper(args.icreds)
 
+    if args.ppt:
+        add_slides(content)
+    elif args.remark:
+        build_remarks(content, path)
+    else:
+        print("Output type missing. Choose -r or -p")
+
+def build_remarks(content, path):
+    r = remark.Remark()
+    for slide in content:
+        r.add_slide(slide)
+    output = r.build()
+    f = open(path, 'w')
+    f.writelines(output)
+
+def add_slides(lines):
+    for line in lines:
+        add_slide(line)
 
 def add_slide(line):
     global OUTPUT
@@ -76,7 +94,7 @@ def add_slide(line):
     prs = pptx.Presentation(OUTPUT)
     title_slide_layout = prs.slide_layouts[1] # title / content
     slide = prs.slides.add_slide(title_slide_layout)
-    
+
     # Find the text share to add content
     for shape in slide.shapes:
         if not shape.has_text_frame:
@@ -104,8 +122,9 @@ def get_instapaper(creds):
     links = ilink.handlelinks(il)
     # Only get the last 30 days
     last30 = list(s for s in links if s["time"] > time.time() - 2595600)
-    for s in last30:
-        add_slide(s)
+    return last30
+    #for s in last30:
+    #    add_slide(s)
 
 def get_title(url):
     try:
@@ -129,6 +148,7 @@ def parse_csv(file):
     #csvobj = []
     with open(file, 'rb') as csvfile:
         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
+        content = []
         for row in urllist:
             ## If url TODO
             record = {}
@@ -155,7 +175,10 @@ def parse_csv(file):
             record["title"] = get_title(row[0])
 
             ## add to slide
-            add_slide(record)
+            content.append(record)
+            #add_slide(record)
+        return content
+
 
 
 def screenshot(url):
