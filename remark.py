@@ -23,7 +23,7 @@ class Remark:
             highlights = []
             for h in slide["highlights"]:
                 content.append("- " + h)
-            content.append(slide["url"])
+            content.append("[" + slide["url"] + "](" + slide["url"] + ")")
             content.append("---")
 
             for line in content:
