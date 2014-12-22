@@ -10,6 +10,7 @@
 import csv, argparse, subprocess
 import logging, sys
 import time
+import unicodedata
 try:
     import pptx
 except:
@@ -62,7 +63,7 @@ def main():
 
     if args.csv:
        content += parse_csv(args.csv)
-    
+
     if args.icreds:
         content = get_instapaper(args.icreds)
 
@@ -78,8 +79,11 @@ def build_remarks(content, path):
     for slide in content:
         r.add_slide(slide)
     output = r.build()
+    ### Convert from unstripped unicode shit
+    output = unicodedata.normalize('NFKD', output).encode('ascii', 'ignore')
     f = open(path, 'w')
     f.writelines(output)
+    f.close()
 
 def add_slides(lines):
     for line in lines:

@@ -69,7 +69,7 @@ class Remark:
         html = RHEADER
         for slide in self.slides:
             for line in slide:
-                html += line + "\n"
+                html += line + "\n\n"
         html += RFOOTER
         return html
 
