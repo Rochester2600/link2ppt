@@ -24,7 +24,7 @@ class Instalink:
         self.password = creds[3]
         self.osecret = None
         self.otoken = None
-        logging.basicConfig(level=logging.DEBUG)
+        #logging.basicConfig(level=logging.DEBUG)
 
     def _xauth(self):
         # try to authenticate with instapaper
