@@ -24,7 +24,7 @@ class Instalink:
         self.password = creds[3]
         self.osecret = None
         self.otoken = None
-        #logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG)
 
     def _xauth(self):
         # try to authenticate with instapaper
@@ -73,6 +73,28 @@ class Instalink:
     def handlelinks(self, r):
         ''' take in the json response a reduce it
         down to only the necessary text'''
+        l_tor = [
+            " tor ",
+            " tor project",
+            " tbb ",
+            "anonymity",
+            "anonymous",
+            "silk road",
+            ]
+        l_mobile = [
+            "android",
+            " ios ",
+            "windows phone",
+            "blackberry",
+            "mobile",
+            "samsung",
+            "motorola",
+            ]
+        l_privacy = []
+        l_politics = []
+        l_netsec = []
+        l_appsec = []
+
         links = []
         for b in r["bookmarks"]:
             link = {}
@@ -86,12 +108,19 @@ class Instalink:
                 h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"]
                 )
             link["highlights"] = highlights
+            ## Categorize content
+            ## TODO search through highlights too
+            if any(x in link["title"].lower() for x in l_tor):
+                link["category"] = "Tor"
+            elif any(x in link["title"].lower() for x in l_mobile):
+                link["category"] = "Mobile"
+            else:
+                link["category"] = "None"
             logging.debug(link)
             links.append(link)
 
+        links.sort(key=lambda x:x["category"])
         return(links)
-
-
 
     def _request(self, url, data, auth):
         r = requests.post(url, data=data, auth=auth) ##TODO clean up

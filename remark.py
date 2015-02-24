@@ -19,7 +19,9 @@ class Remark:
         for slide in reversed(self.slides):
             content = []
             #content.append("class: center, middle") ##TODO change to dynamic
-            content.append("## " + slide["title"])
+            content.append("## " + slide["title"]) 
+            print(slide)
+            content.append("###" + slide["category"]) ##DEBUG
             highlights = []
             for h in slide["highlights"]:
                 content.append("- " + h)
@@ -53,6 +55,7 @@ class Remark:
             titles.append(s["title"])
         slide["highlights"] = titles
         slide["url"] = ""
+        slide["category"] = "Random"
         self.add_slide(slide)
 
     def build(self):

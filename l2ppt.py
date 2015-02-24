@@ -14,7 +14,7 @@ import unicodedata
 try:
     import pptx
 except:
-    print("No pptx module!")
+    print("Running without PPTX support")
     #sys.exit()
 
 try:
@@ -76,6 +76,7 @@ def main():
 
 def build_remarks(content, path):
     r = remark.Remark()
+    ##TODO: Sort list response by category
     for slide in content:
         r.add_slide(slide)
     output = r.build()
@@ -109,6 +110,7 @@ def add_slide(line):
         p = text_frame.add_paragraph()
         p.text = para_str
     text_frame.add_paragraph().text = line["url"]
+    text_frame.add_paragraph().text = line["category"]
 
     # Set title
     title = slide.shapes.title
@@ -118,7 +120,7 @@ def add_slide(line):
     prs.save(OUTPUT)
 
 
-def get_instapaper(creds):
+def get_instapaper(creds, categorize=True):
     f = open(creds).read().splitlines()
     ilink = instalink.Instalink(f)
     ilink.login()
