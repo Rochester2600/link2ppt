@@ -89,11 +89,37 @@ class Instalink:
             "mobile",
             "samsung",
             "motorola",
+            " sms ",
+            " sim card",
+            " 4g ",
+            " 5g ",
+            " 6g ",
+            " 3g ",
+            " phone",
+            "SS7",
+            "smartphone",
+            "cyanogenmod"
             ]
         l_privacy = []
         l_politics = []
         l_netsec = []
-        l_appsec = []
+        l_dark = [
+            "coin ",
+            "silk road",
+        ]
+        l_infosec = [
+            "owasp ",
+            "vulnerability",
+            "infosec",
+            "information security",
+            "cyber ",
+            "breach",
+            "exploit",
+            "xss ",
+            " overflow ",
+            " buffer ",
+            " audit",
+        ]
 
         links = []
         for b in r["bookmarks"]:
@@ -114,6 +140,10 @@ class Instalink:
                 link["category"] = "Tor"
             elif any(x in link["title"].lower() for x in l_mobile):
                 link["category"] = "Mobile"
+            elif any(x in link["title"].lower() for x in l_infosec):
+                link["category"] = "Infosec"
+            elif any(x in link["title"].lower() for x in l_dark):
+                link["category"] = "Dark"
             else:
                 link["category"] = "None"
             logging.debug(link)

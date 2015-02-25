@@ -20,11 +20,11 @@ class Remark:
             content = []
             #content.append("class: center, middle") ##TODO change to dynamic
             content.append("## " + slide["title"])
-            content.append("###" + slide["category"]) ##DEBUG
             highlights = []
             for h in slide["highlights"]:
                 content.append("- " + h)
             content.append("[" + slide["url"] + "](" + slide["url"] + ")")
+            content.append(".footnote[%s]" % slide["category"])
             content.append("---")
 
             for line in content:

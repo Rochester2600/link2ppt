@@ -9,8 +9,10 @@
 
 import csv, argparse, subprocess
 import logging, sys
+import re
 import time
 import unicodedata
+from HTMLParser import HTMLParser
 try:
     import pptx
 except:
@@ -50,9 +52,9 @@ def main():
     parser.add_argument('-r',
         dest="remark",
         help="Output to remarkjs markdown. e.g. output.md")
-    #parser.add_argument('-o',
-    #    dest='output,
-    #    help='Command line import')
+    parser.add_argument('--full',
+        help="Download full list from instapaper",
+        action="store_true")
     parser.add_argument('-p',
                         dest='ppt',
                         help="Output to powerpoint")
@@ -62,10 +64,14 @@ def main():
     content = []
 
     if args.csv:
-       content += parse_csv(args.csv)
+        content += parse_csv(args.csv)
 
     if args.icreds:
-        content = get_instapaper(args.icreds)
+        if args.full:
+            full = True
+        else:
+            full = False
+        content = get_instapaper(args.icreds, full)
 
     if args.ppt:
         add_slides(content)
@@ -76,14 +82,15 @@ def main():
 
 def build_remarks(content, path):
     r = remark.Remark()
-    ##TODO: Sort list response by category
     for slide in content:
         r.add_slide(slide)
     output = r.build()
     ### Convert from unstripped unicode shit
+    #re.sub('<[^<]+?>', '', text)
     output = unicodedata.normalize('NFKD', output).encode('ascii', 'ignore')
+    cleanoutput = teh_security(output)
     f = open(path, 'w')
-    f.writelines(output)
+    f.writelines(cleanoutput)
     f.close()
 
 def add_slides(lines):
@@ -120,17 +127,26 @@ def add_slide(line):
     prs.save(OUTPUT)
 
 
-def get_instapaper(creds, categorize=True):
+def get_instapaper(creds, full=False):
     f = open(creds).read().splitlines()
     ilink = instalink.Instalink(f)
     ilink.login()
     il = ilink.getlinks()
     links = ilink.handlelinks(il)
     # Only get the last 30 days
-    last30 = list(s for s in links if s["time"] > time.time() - 2595600)
-    return last30
-    #for s in last30:
-    #    add_slide(s)
+    if not full:
+        content = list(s for s in links if s["time"] > time.time() - 2595600)
+    else:
+        content = list(s for s in links)
+
+    return content
+
+def teh_security(badness):
+    s = Stripper()
+    s.feed(badness)
+    goodness = s.get_data()
+    return goodness
+
 
 def get_title(url):
     try:
@@ -205,6 +221,16 @@ def screenshot(url):
         logging.debug("Exception caught for wkhtmltopdf")
         return None
 
+
+class Stripper(HTMLParser):
+    '''clASS TO summon thE STRpper for tEH STR1PIN'''
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
 if __name__ == '__main__':
     # init main
