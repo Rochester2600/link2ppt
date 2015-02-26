@@ -80,6 +80,8 @@ class Instalink:
             "anonymity",
             "anonymous",
             "silk road",
+            "deep web",
+            "onion",
             ]
         l_mobile = [
             "android",
