@@ -70,6 +70,14 @@ class Instalink:
 
         return(r.json())
 
+    def gettext(self, bookmark_id):
+        url = __ENDPOINT__ + "bookmarks/get_text"
+        data = {
+            "bookmark_id": bookmark_id
+        }
+        r = self._request(url, data=data, auth=self._oauth())
+        return(r.text)
+
     def handlelinks(self, r):
         ''' take in the json response a reduce it
         down to only the necessary text'''
@@ -126,6 +134,7 @@ class Instalink:
         links = []
         for b in r["bookmarks"]:
             link = {}
+            link["bookmark_id"] = b["bookmark_id"]
             link["title"] = b["title"]
             link["url"] = b["url"]
             link["starred"] = b["starred"]
@@ -161,10 +170,6 @@ class Instalink:
     def getfolders(self):
         folderurl = __BASE__ + "/api/" + __API_VERSION__ + "/folders/list"
         ## TODO
-
-    def gettext(self, bookmark_id):
-        '''Return the text from the bookmarks'''
-        logging.debug("gettext")
 
 
 def main():

@@ -7,12 +7,22 @@
 # CSV format:
 # url, date, authors
 
+from __future__ import absolute_import
+from __future__ import division, print_function, unicode_literals
 import csv, argparse, subprocess
 import logging, sys
 import re
 import time
 import unicodedata
+
+from sumy.parsers.html import HtmlParser
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer as Summarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
 from HTMLParser import HTMLParser
+
 try:
     import pptx
 except:
@@ -33,6 +43,9 @@ try:
     from BeautifulSoup import BeautifulSoup
 except:
     print("Missing beautifulsoup module")
+
+
+
 
 OUTPUT = ""
 CREDS = "./creds"
@@ -127,6 +140,25 @@ def add_slide(line):
     prs.save(OUTPUT)
 
 
+def desperate_summarizer(content):
+    """ Sumy implementation that tries to guess
+    what the content means """
+    LANGUAGE = "english"
+    SENTENCES_COUNT = 5
+    parser = PlaintextParser.from_string(content, Tokenizer(LANGUAGE))
+    stemmer = Stemmer(LANGUAGE)
+
+    summarizer = Summarizer(stemmer)
+    summarizer.stop_words = get_stop_words(LANGUAGE)
+
+    highlights = []
+    for sentence in summarizer(parser.document, SENTENCES_COUNT):
+        highlights.append(sentence._text)
+        print(sentence)
+
+    return highlights
+
+
 def get_instapaper(creds, full=False):
     f = open(creds).read().splitlines()
     ilink = instalink.Instalink(f)
@@ -138,6 +170,15 @@ def get_instapaper(creds, full=False):
         content = list(s for s in links if s["time"] > time.time() - 2595600)
     else:
         content = list(s for s in links)
+
+    for indx, line in enumerate(content):
+        if not line["highlights"]:
+            logging.debug("No highlights found. adding some")
+            print("line[bookmarkid]= %s" % line["bookmark_id"])
+            text = ilink.gettext(line["bookmark_id"])
+            #text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+            content[indx]["highlights"] = desperate_summarizer(text)
+
 
     return content
 
