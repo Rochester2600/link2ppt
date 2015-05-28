@@ -156,7 +156,7 @@ class Instalink:
             elif any(x in link["title"].lower() for x in l_dark):
                 link["category"] = "Dark"
             else:
-                link["category"] = "None"
+                link["category"] = "Unknown"
             logging.debug(link)
             links.append(link)
 

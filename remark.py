@@ -6,6 +6,8 @@
 ### TODO Change this
 ## planned on implementing: sourceUrl: 'markdown.md'
 
+import time
+
 class Remark:
     def __init__(self, template=None):
         ## Create new remark instance
@@ -24,7 +26,8 @@ class Remark:
             for h in slide["highlights"]:
                 content.append("- " + h)
             content.append("[" + slide["url"] + "](" + slide["url"] + ")")
-            content.append(".footnote[%s]" % slide["category"])
+	    print(slide)
+            content.append(".footnote[%s - %s]" % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(slide["time"]))), slide["category"]))
             content.append("---")
 
             for line in content:
@@ -54,7 +57,8 @@ class Remark:
             titles.append(s["title"])
         slide["highlights"] = titles
         slide["url"] = ""
-        slide["category"] = "Random"
+	slide["time"] = time.time()
+        slide["category"] = "Agenda"
         self.add_slide(slide)
 
     def build(self):
