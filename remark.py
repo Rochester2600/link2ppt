@@ -7,6 +7,7 @@
 ## planned on implementing: sourceUrl: 'markdown.md'
 
 import time
+import rimage
 
 class Remark:
     def __init__(self, template=None):
@@ -21,18 +22,30 @@ class Remark:
         for slide in reversed(self.slides):
             content = []
             #content.append("class: center, middle") ##TODO change to dynamic
+            lurl = inject_giphy(slide["title"])
+            if lurl:
+                content.append(lurl)
             content.append("## " + slide["title"])
             highlights = []
             for h in slide["highlights"]:
                 content.append("- " + h)
             content.append("[" + slide["url"] + "](" + slide["url"] + ")")
-	    print(slide)
+	    #print(slide)
             content.append(".footnote[%s - %s]" % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(slide["time"]))), slide["category"]))
             content.append("---")
 
             for line in content:
               md += line + "\n\n"
         return md
+
+    def inject_giphy(self, search):
+        if True:
+            search = search.split()
+            giphy = rimage.giphy()
+            giphy.get_image(search)
+            return url
+        else:
+            return ""
 
     def add_slide(self, slide):
         self.slides.append(slide)
