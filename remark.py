@@ -41,7 +41,8 @@ class Remark:
     def inject_giphy(self, search):
         if True:
             search = search.split()
-            giphy = rimage.giphy()
+            # Get the first 2 words in the title
+            giphy = rimage.giphy()[:2]
             url = giphy.get_image(search)
             return url
         else:

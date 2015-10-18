@@ -18,8 +18,8 @@ class giphy():
             r = requests.get(url)
             images = r.json()
             image = str(images["data"][0]["images"]["original"]["url"])
-        except:
-            print("Failed to get image")
+        except Exception as e:
+            print("Failed to get image %s" % e)
             return None
 
         return image
@@ -28,5 +28,5 @@ class giphy():
 if __name__ == '__main__':
   print("Classy...looking for balls")
   a = giphy()
-  b = a.get_image(["balls"])
+  b = a.get_image(["balls","donkey","and","yup","ok"])
   print(b)
