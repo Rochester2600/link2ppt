@@ -24,7 +24,11 @@ class Remark:
             #content.append("class: center, middle") ##TODO change to dynamic
             lurl = self.inject_giphy(slide["title"])
             if lurl:
-                content.append(lurl)
+                bg_base = 'background-image: url(%s)'
+                content.append(bg_base % lurl)
+                content.append('background-position: center;')
+                content.append('background-repeat: no-repeat;')
+                content.append('background-size: contain;')
             content.append("## " + slide["title"])
             #highlights = []
             for h in slide["highlights"]:
@@ -46,7 +50,7 @@ class Remark:
             url = giphy.get_image(search)
             return url
         else:
-            return ""
+            return False
 
     def add_slide(self, slide):
         self.slides.append(slide)
