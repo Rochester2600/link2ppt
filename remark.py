@@ -42,7 +42,7 @@ class Remark:
         if True:
             search = search.split()
             giphy = rimage.giphy()
-            giphy.get_image(search)
+            url = giphy.get_image(search)
             return url
         else:
             return ""
