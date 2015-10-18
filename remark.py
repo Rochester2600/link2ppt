@@ -40,9 +40,9 @@ class Remark:
 
     def inject_giphy(self, search):
         if True:
-            search = search.split()
             # Get the first 2 words in the title
-            giphy = rimage.giphy()[:2]
+            search = search.split()[:2]
+            giphy = rimage.giphy()
             url = giphy.get_image(search)
             return url
         else:
