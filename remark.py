@@ -22,16 +22,16 @@ class Remark:
         for slide in reversed(self.slides):
             content = []
             #content.append("class: center, middle") ##TODO change to dynamic
-            lurl = inject_giphy(slide["title"])
+            lurl = self.inject_giphy(slide["title"])
             if lurl:
                 content.append(lurl)
             content.append("## " + slide["title"])
-            highlights = []
+            #highlights = []
             for h in slide["highlights"]:
                 content.append("- " + h)
             content.append("[" + slide["url"] + "](" + slide["url"] + ")")
-	    #print(slide)
-            content.append(".footnote[%s - %s]" % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(slide["time"]))), slide["category"]))
+            content.append(
+                ".footnote[%s - %s]" % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(slide["time"]))), slide["category"]))
             content.append("---")
 
             for line in content:
