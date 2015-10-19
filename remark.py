@@ -23,12 +23,12 @@ class Remark:
             content = []
             #content.append("class: center, middle") ##TODO change to dynamic
             lurl = self.inject_giphy(slide["title"])
-            if lurl:
-                bg_base = 'background-image: url(%s)'
-                content.append(bg_base % lurl)
-                content.append('background-position: bottom;')
-                content.append('background-repeat: no-repeat;')
-                content.append('background-size: contain;')
+            #if lurl:
+            #    bg_base = 'background-image: url(%s)'
+            #    content.append(bg_base % lurl)
+            #    content.append('background-position: bottom;')
+            #    content.append('background-repeat: no-repeat;')
+            #    content.append('background-size: contain;')
             content.append("## " + slide["title"])
             #highlights = []
             for h in slide["highlights"]:
@@ -36,6 +36,8 @@ class Remark:
             content.append("[" + slide["url"] + "](" + slide["url"] + ")")
             content.append(
                 ".footnote[%s - %s]" % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(slide["time"]))), slide["category"]))
+            if lurl:
+                content.append('![lurl](%s))' % lurl)
             content.append("---")
 
             for line in content:
