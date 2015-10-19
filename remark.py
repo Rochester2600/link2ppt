@@ -26,7 +26,7 @@ class Remark:
             if lurl:
                 bg_base = 'background-image: url(%s)'
                 content.append(bg_base % lurl)
-                content.append('background-position: center;')
+                content.append('background-position: bottom;')
                 content.append('background-repeat: no-repeat;')
                 content.append('background-size: contain;')
             content.append("## " + slide["title"])
