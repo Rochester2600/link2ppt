@@ -147,16 +147,20 @@ class Instalink:
             link["highlights"] = highlights
             ## Categorize content
             ## TODO search through highlights too
-            if any(x in link["title"].lower() for x in l_tor):
-                link["category"] = "Tor"
-            elif any(x in link["title"].lower() for x in l_mobile):
-                link["category"] = "Mobile"
-            elif any(x in link["title"].lower() for x in l_infosec):
-                link["category"] = "Infosec"
-            elif any(x in link["title"].lower() for x in l_dark):
-                link["category"] = "Dark"
+            fuckit = True  # screw this. It just confuses everyone
+            if not fuckit:
+                if any(x in link["title"].lower() for x in l_tor):
+                    link["category"] = "Tor"
+                elif any(x in link["title"].lower() for x in l_mobile):
+                    link["category"] = "Mobile"
+                elif any(x in link["title"].lower() for x in l_infosec):
+                    link["category"] = "Infosec"
+                elif any(x in link["title"].lower() for x in l_dark):
+                    link["category"] = "Dark"
+                else:
+                    link["category"] = "Unknown"
             else:
-                link["category"] = "Unknown"
+                link["category"] = "FuckItMode_Enabled"
             logging.debug(link)
             links.append(link)
 
