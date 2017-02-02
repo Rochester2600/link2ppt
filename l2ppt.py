@@ -15,19 +15,14 @@ import re
 import time
 import unicodedata
 
-from sumy.parsers.html import HtmlParser
+#from sumy.parsers.html import HtmlParser
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer as Summarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 from HTMLParser import HTMLParser
-
-try:
-    import pptx
-except:
-    print("Running without PPTX support")
-    #sys.exit()
+import random
 
 try:
     import remark
@@ -49,13 +44,15 @@ except:
 
 OUTPUT = ""
 CREDS = "./creds"
+LAZYLIST = [
+	"slashdot.org",
+	]
 
 
 def main():
     global OUTPUT
     # Handle arguments
-    parser = argparse.ArgumentParser(
-        description='Convert links to ppt')
+    parser = argparse.ArgumentParser(description="Download instapaper and do cool things with it.")
     parser.add_argument("-c",
                         dest='csv',
                         help='csv file')
@@ -68,9 +65,6 @@ def main():
     parser.add_argument('--full',
         help="Download full list from instapaper",
         action="store_true")
-    parser.add_argument('-p',
-                        dest='ppt',
-                        help="Output to powerpoint")
 
     args = parser.parse_args()
 
@@ -86,9 +80,7 @@ def main():
             full = False
         content = get_instapaper(args.icreds, full)
 
-    if args.ppt:
-        add_slides(content)
-    elif args.remark:
+    if args.remark:
         build_remarks(content, args.remark)
     else:
         print("Output type missing. Choose -r or -p")
@@ -106,40 +98,6 @@ def build_remarks(content, path):
     f.writelines(cleanoutput)
     f.close()
 
-def add_slides(lines):
-    for line in lines:
-        add_slide(line)
-
-def add_slide(line):
-    global OUTPUT
-    '''Needs a dict of title and url at least
-    '''
-    ## TODO this should handle instapaper input
-    ##  or a CSV. Right now it's only instapaper
-    prs = pptx.Presentation(OUTPUT)
-    title_slide_layout = prs.slide_layouts[1] # title / content
-    slide = prs.slides.add_slide(title_slide_layout)
-
-    # Find the text share to add content
-    for shape in slide.shapes:
-        if not shape.has_text_frame:
-            continue
-        text_frame = shape.text_frame
-    text_frame.clear()
-    for para_str in line["highlights"]:
-        p = text_frame.add_paragraph()
-        p.text = para_str
-    text_frame.add_paragraph().text = line["url"]
-    text_frame.add_paragraph().text = line["category"]
-
-    # Set title
-    title = slide.shapes.title
-    title.text = line["title"]
-
-    # Save to output
-    prs.save(OUTPUT)
-
-
 def desperate_summarizer(content):
     """ Sumy implementation that tries to guess
     what the content means """
@@ -154,10 +112,14 @@ def desperate_summarizer(content):
     highlights = []
     for sentence in summarizer(parser.document, SENTENCES_COUNT):
         highlights.append(sentence._text)
-        print(sentence)
+        logging.debug(sentence)
 
     return highlights
 
+def lazy_summarizer(content):
+    """Take the first 8 sentences"""
+    highlights = [re.sub('[\t|\n]','', x.strip(' \t\n\r')) for x in content.split('. ')[:8]]
+    return highlights
 
 def get_instapaper(creds, full=False):
     f = open(creds).read().splitlines()
@@ -175,12 +137,15 @@ def get_instapaper(creds, full=False):
     for indx, line in enumerate(content):
         if not line["highlights"]:
             logging.debug("No highlights found. adding some")
-            print("line[bookmarkid]= %s" % line["bookmark_id"])
+            #print("line[bookmarkid]= %s" % line["bookmark_id"])
             text = ilink.gettext(line["bookmark_id"])
             #text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
-            content[indx]["highlights"] = desperate_summarizer(text)
-
-
+	    if content[indx]["summarizer"] == "lazy" or bool(random.getrandbits(1)):
+	       content[indx]["highlights"] = lazy_summarizer(text)
+	    elif content[indx]["summarizer"] == "special":
+	       content[indx]["highlights"] = "todo"
+	    else:
+	       content[indx]["highlights"] = desperate_summarizer(text)
     return content
 
 def teh_security(badness):
@@ -226,16 +191,6 @@ def parse_csv(file):
                 record["date"] = row[2]
             except IndexError:
                 record["date"] = None
-            #sspath = screenshot(record["url"]) ## Disable mem issue
-            sspath = None
-
-            if sspath:
-                logging.debug("Screenshot complete")
-                record["screenshot"] = sspath
-                #row.append(sspath)
-            else:
-                logging.error("Screenshot failed")
-                record["screenshot"] = None
             record["title"] = get_title(row[0])
 
             ## add to slide
@@ -243,25 +198,6 @@ def parse_csv(file):
             #add_slide(record)
         return content
 
-
-
-def screenshot(url):
-    # screenshot url
-    ## http://wkhtmltopdf.org/
-    outputfile = "%s.pdf" % url  # TODO strip!!
-    commands = ["wkhtmltopdf", url, outputfile]
-    try:
-        if subprocess.call(commands) < 1:
-            logging.debug(
-                "Error executing shell command: \n"
-                "Make sure you are running with an X session"
-            )
-            return None
-        else:
-            return outputfile
-    except:
-        logging.debug("Exception caught for wkhtmltopdf")
-        return None
 
 
 class Stripper(HTMLParser):

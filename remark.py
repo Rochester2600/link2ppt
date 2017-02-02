@@ -88,4 +88,4 @@ class Remark:
         return md
 
 if __name__ == '__main__':
-    print("")
+    print("No, it's the other one")

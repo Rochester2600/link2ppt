@@ -145,6 +145,20 @@ class Instalink:
                 h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"]
                 )
             link["highlights"] = highlights
+	    ## Choose a summarizer that best fits the content
+	    ## ie slashdot can use lazy
+	    import tldextract
+	    link["domain"] = tldextract.extract(link["url"])
+	    summarize_lazy = [
+		"slashdot.org",
+		]
+	    summarize_special = []
+	    if link["domain"] in summarize_lazy:
+	        link["summarizer"] = "lazy"
+ 	    elif link["domain"] in summarize_special:
+		link["summarizer"] = "special"
+	    else:
+		link["summarizer"] = "default"
             ## Categorize content
             ## TODO search through highlights too
             fuckit = True  # screw this. It just confuses everyone
