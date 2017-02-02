@@ -19,7 +19,7 @@ class giphy():
             images = r.json()
             image = str(images["data"][0]["images"]["original"]["url"])
         except Exception as e:
-            print("Failed to get image %s" % e)
+            print("Failed to get image %s:" % e)
             return None
 
         return image
