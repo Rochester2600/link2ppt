@@ -130,7 +130,7 @@ def get_instapaper(creds, full=False):
     # Only get the last 22 days
     if not full:
         days = 22 * 60 * 60 * 24
-        content = list(s for s in links if s["time"] > time.time() - 2595600)
+        content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
     else:
         content = list(s for s in links)
 
