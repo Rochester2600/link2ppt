@@ -7,7 +7,7 @@ import requests
 class giphy():
 
     def __init__(self):
-        self.GIPHYBASE = 'http://api.giphy.com/v1/gifs/search?q=%s&api_key=%s'
+        self.GIPHYBASE = 'https://api.giphy.com/v1/gifs/search?q=%s&api_key=%s'
         self.GIPHYAPI = 'dc6zaTOxFJmzC'
 
     def get_image(self, terms):
