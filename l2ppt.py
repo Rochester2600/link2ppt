@@ -116,9 +116,10 @@ def desperate_summarizer(content):
 
     return highlights
 
+
 def lazy_summarizer(content):
     """Take the first 8 sentences"""
-    highlights = [re.sub('[\t|\n]','', x.strip(' \t\n\r')) for x in content.split('. ')[:8]]
+    highlights = [re.sub('[\t|\n]','', x[:250].strip(' \t\n\r')) for x in content.split('. ')[:8]]
     return highlights
 
 def get_instapaper(creds, full=False):
@@ -140,12 +141,19 @@ def get_instapaper(creds, full=False):
             #print("line[bookmarkid]= %s" % line["bookmark_id"])
             text = ilink.gettext(line["bookmark_id"])
             #text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+            # this randomly choosing how to summarize. Great
 	    if content[indx]["summarizer"] == "lazy" or bool(random.getrandbits(1)):
 	       content[indx]["highlights"] = lazy_summarizer(text)
+               #content[indx]["highlights"].append("LAZYBOT")
+               #print("used the lazy summarizer")
 	    elif content[indx]["summarizer"] == "special":
 	       content[indx]["highlights"] = "todo"
 	    else:
-	       content[indx]["highlights"] = desperate_summarizer(text)
+	       #content[indx]["highlights"] = desperate_summarizer(text)
+               #content[indx]["highlights"] = honest_summarizer(text)
+               content[indx]["highlights"] = lazy_summarizer(text)
+               #content[indx]["highlights"].append("SUMYBOT9000")
+               #print("Used the fail over summarizer")
     return content
 
 def teh_security(badness):

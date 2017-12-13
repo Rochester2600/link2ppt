@@ -76,7 +76,16 @@ class Instalink:
             "bookmark_id": bookmark_id
         }
         r = self._request(url, data=data, auth=self._oauth())
-        return(r.text)
+        text = self._clean(r.text)
+        return(text)
+
+    def _clean(self, text):
+        # replace ^M's
+        text = ' '.join(text.split(r'\r'))
+        # remove big spaces
+        text = ' '.join(text.split())
+        return text
+
 
     def handlelinks(self, r):
         ''' take in the json response a reduce it
