@@ -3,4 +3,4 @@ init:
 	pipenv install --dev
 
 ci:
-	pipenv run l2ppt.py
+	pipenv run python l2ppt.py
