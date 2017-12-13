@@ -23,6 +23,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 from HTMLParser import HTMLParser
 import random
+import os
 
 try:
     import remark
@@ -78,7 +79,16 @@ def main():
             full = True
         else:
             full = False
-        content = get_instapaper(args.icreds, full)
+        creds = open(args.icreds).read().splitlines()
+        content = get_instapaper(creds, full)
+    else:
+        creds = []
+        full = False
+        creds.append(os.environ['INSTA1'])
+        creds.append(os.environ['INSTA2'])
+        creds.append(os.environ['INSTA3'])
+        creds.append(os.environ['INSTA4'])
+        content = get_instapaper(creds, full)
 
     if args.remark:
         build_remarks(content, args.remark)
@@ -123,8 +133,7 @@ def lazy_summarizer(content):
     return highlights
 
 def get_instapaper(creds, full=False):
-    f = open(creds).read().splitlines()
-    ilink = instalink.Instalink(f)
+    ilink = instalink.Instalink(creds)
     ilink.login()
     il = ilink.getlinks()
     links = ilink.handlelinks(il)
