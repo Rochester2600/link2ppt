@@ -54,15 +54,9 @@ def main():
     global OUTPUT
     # Handle arguments
     parser = argparse.ArgumentParser(description="Download instapaper and do cool things with it.")
-    parser.add_argument("-c",
-                        dest='csv',
-                        help='csv file')
     parser.add_argument('-i',
         dest='icreds',
         help='File with creds for instapaper')
-    parser.add_argument('-r',
-        dest="remark",
-        help="Output to remarkjs markdown. e.g. output.md")
     parser.add_argument('--full',
         help="Download full list from instapaper",
         action="store_true")
@@ -70,9 +64,6 @@ def main():
     args = parser.parse_args()
 
     content = []
-
-    if args.csv:
-        content += parse_csv(args.csv)
 
     if args.icreds:
         if args.full:
@@ -89,11 +80,6 @@ def main():
         creds.append(os.environ['INSTA3'])
         creds.append(os.environ['INSTA4'])
         content = get_instapaper(creds, full)
-
-    if args.remark:
-        build_remarks(content, args.remark)
-    else:
-        print("Output type missing. Choose -r or -p")
 
 def build_remarks(content, path):
     r = remark.Remark()
