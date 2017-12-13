@@ -1,6 +1,6 @@
 init:
-    pip install pipenv
-    pipenv install --dev
+	pip install pipenv
+	pipenv install --dev
 
 ci:
-    pipenv run l2ppt.py
+	pipenv run l2ppt.py
