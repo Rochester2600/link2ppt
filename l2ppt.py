@@ -23,6 +23,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 from HTMLParser import HTMLParser
 import random
+import os
 
 try:
     import remark
@@ -78,7 +79,16 @@ def main():
             full = True
         else:
             full = False
-        content = get_instapaper(args.icreds, full)
+        creds = open(args.icreds).read().splitlines()
+        content = get_instapaper(creds, full)
+    else:
+        creds = []
+        full = False
+        creds.append(os.environ['INSTA1'])
+        creds.append(os.environ['INSTA2'])
+        creds.append(os.environ['INSTA3'])
+        creds.append(os.environ['INSTA4'])
+        content = get_instapaper(creds, full)
 
     if args.remark:
         build_remarks(content, args.remark)
@@ -116,21 +126,21 @@ def desperate_summarizer(content):
 
     return highlights
 
+
 def lazy_summarizer(content):
     """Take the first 8 sentences"""
-    highlights = [re.sub('[\t|\n]','', x.strip(' \t\n\r')) for x in content.split('. ')[:8]]
+    highlights = [re.sub('[\t|\n]','', x[:250].strip(' \t\n\r')) for x in content.split('. ')[:8]]
     return highlights
 
 def get_instapaper(creds, full=False):
-    f = open(creds).read().splitlines()
-    ilink = instalink.Instalink(f)
+    ilink = instalink.Instalink(creds)
     ilink.login()
     il = ilink.getlinks()
     links = ilink.handlelinks(il)
     # Only get the last 22 days
     if not full:
         days = 22 * 60 * 60 * 24
-        content = list(s for s in links if s["time"] > time.time() - 2595600)
+        content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
     else:
         content = list(s for s in links)
 
@@ -140,12 +150,19 @@ def get_instapaper(creds, full=False):
             #print("line[bookmarkid]= %s" % line["bookmark_id"])
             text = ilink.gettext(line["bookmark_id"])
             #text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+            # this randomly choosing how to summarize. Great
 	    if content[indx]["summarizer"] == "lazy" or bool(random.getrandbits(1)):
 	       content[indx]["highlights"] = lazy_summarizer(text)
+               #content[indx]["highlights"].append("LAZYBOT")
+               #print("used the lazy summarizer")
 	    elif content[indx]["summarizer"] == "special":
 	       content[indx]["highlights"] = "todo"
 	    else:
-	       content[indx]["highlights"] = desperate_summarizer(text)
+	       #content[indx]["highlights"] = desperate_summarizer(text)
+               #content[indx]["highlights"] = honest_summarizer(text)
+               content[indx]["highlights"] = lazy_summarizer(text)
+               #content[indx]["highlights"].append("SUMYBOT9000")
+               #print("Used the fail over summarizer")
     return content
 
 def teh_security(badness):

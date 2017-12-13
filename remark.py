@@ -30,14 +30,20 @@ class Remark:
             #    content.append('background-repeat: no-repeat;')
             #    content.append('background-size: contain;')
             content.append("## " + slide["title"])
+            if lurl:
+                  content.append('![lurl](%s)' % lurl)
+                  #content.append("---")
+
             #highlights = []
             for h in slide["highlights"]:
-                content.append("- " + h)
+                if h.startswith('"'):
+                    content.append("> " + h)
+                else:
+                    content.append("- " + h)
             content.append("[" + slide["url"] + "](" + slide["url"] + ")")
             content.append(
                 ".footnote[%s - %s]" % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(slide["time"]))), slide["category"]))
-            if lurl:
-                content.append('![lurl](%s))' % lurl)
+
             content.append("---")
 
             for line in content:
