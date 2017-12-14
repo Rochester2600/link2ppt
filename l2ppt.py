@@ -53,6 +53,7 @@ TESTMODE = False
 
 def main():
     global OUTPUT
+    global TESTMODE
     # Handle arguments
     parser = argparse.ArgumentParser(description="Download instapaper and do cool things with it.")
     parser.add_argument('-i',
@@ -68,7 +69,10 @@ def main():
 
     args = parser.parse_args()
 
+    if args.testmode: TESTMODE = True
+
     content = []
+
 
     if args.icreds:
         if args.full:
@@ -129,14 +133,16 @@ def lazy_summarizer(content):
 def get_instapaper(creds, full=False):
     global TESTMODE
     if TESTMODE:
-        content = {
-            "highlights": "FAKE NEWS",
+        content = [{
+            "highlights": ["FAKE NEWS"],
             "summarizer": "lazy",
             "bookmark_id": "42",
             "text": "Weird butts",
             "title": "SOMEONE FAILED ME",
             "url": "https://www.antitree.com",
-            }
+            "time": '1513216677',
+            "category": "butts",
+            }]
         return content
     ilink = instalink.Instalink(creds)
     ilink.login()
