@@ -48,6 +48,7 @@ CREDS = "./creds"
 LAZYLIST = [
 	"slashdot.org",
 	]
+TESTMODE = False
 
 
 def main():
@@ -59,6 +60,10 @@ def main():
         help='File with creds for instapaper')
     parser.add_argument('--full',
         help="Download full list from instapaper",
+        action="store_true")
+    parser.add_argument('-t', 
+        dest='testmode',
+        help="Enable test mode",
         action="store_true")
 
     args = parser.parse_args()
@@ -120,7 +125,19 @@ def lazy_summarizer(content):
     highlights = [re.sub('[\t|\n]','', x[:250].strip(' \t\n\r')) for x in content.split('. ')[:8]]
     return highlights
 
+
 def get_instapaper(creds, full=False):
+    global TESTMODE
+    if TESTMODE:
+        content = {
+            "highlights": "FAKE NEWS",
+            "summarizer": "lazy",
+            "bookmark_id": "42",
+            "text": "Weird butts",
+            "title": "SOMEONE FAILED ME",
+            "url": "https://www.antitree.com",
+            }
+        return content
     ilink = instalink.Instalink(creds)
     ilink.login()
     il = ilink.getlinks()
