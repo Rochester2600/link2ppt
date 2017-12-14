@@ -8,3 +8,11 @@ install: "make"
 # command to run tests
 script:
     - make ci
+
+deploy:
+    - provider: s3
+    - access_key_id: $AWS_KEYID
+    - secret_access_key: $AWS_SECRET
+    - bucket: "2600intel"
+    - skip_cleanup: true
+    - local_dir: build
