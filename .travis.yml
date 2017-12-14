@@ -11,6 +11,9 @@ script:
 
 deploy:
     - provider: s3
-    - bucket: 2600intel
+    - bucket: "2600intel"
+    - access_key_id: ENV["AWS_ACCESS_KEY_ID"]
+    - secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"]
     - skip_cleanup: true
     - local_dir: build
+    - acl: public_read
