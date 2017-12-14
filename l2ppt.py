@@ -81,7 +81,7 @@ def main():
         creds.append(os.environ['INSTA4'])
         content = get_instapaper(creds, full)
 
-    build_remarks(content, '2600.md')
+    build_remarks(content, 'build/2600.md')
 
 def build_remarks(content, path):
     r = remark.Remark()
