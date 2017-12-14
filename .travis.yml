@@ -22,6 +22,6 @@ before_deploy:
 
 deploy:
     - provider: releases
-    - api_key: $GITHUB_APIKEY
+    - api_key: env['GITHUB_APIKEY']
     - file: "build/2600.md"
     - skip_cleanup: true
