@@ -26,4 +26,6 @@ deploy:
     - api_key: $GITHUB_APIKEY
     - file: "build/2600.md"
     - skip_cleanup: true
-    - tags: true
+    - on: 
+      - tags: true
+      - all_branches: true
