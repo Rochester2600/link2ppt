@@ -13,7 +13,7 @@ script:
 
 deploy:
     - provider: releases
-    - api_key: $GITHUB_BUTTS
+    - api_key: c3924be4e81c6c0e710e29a26ecb22aed4638cce
     - file: "build/2600.md"
     - skip_cleanup: true
     - on: 
