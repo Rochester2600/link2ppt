@@ -9,11 +9,11 @@ install:
 
 # command to run tests
 script:
-    - python -c "import os;print os.environ['GITHUB_APIKEY']"
+    - python -c "import os;print os.environ['GITHUB_BUTTS']"
 
 deploy:
     - provider: releases
-    - api_key: $GITHUB_APIKEY
+    - api_key: $GITHUB_BUTTS
     - file: "build/2600.md"
     - skip_cleanup: true
     - on: 
