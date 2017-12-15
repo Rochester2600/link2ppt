@@ -4,8 +4,10 @@ python:
     - "2.7"
 
 env:
-    - PIPENV_IGNORE_VIRTUALENVS=False
-
+  global:
+    - PIPENV_VENV_IN_PROJECT=1
+    - PIPENV_IGNORE_VIRTUALENVS=1
+    
 # command to install dependencies
 install: 
     - pip install pipenv --upgrade
