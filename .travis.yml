@@ -8,7 +8,7 @@ env:
 
 # command to install dependencies
 install: 
-    - pip install pipenv
+    - pip install pipenv --upgrade
     - pipenv install --dev
 
 # command to run tests
