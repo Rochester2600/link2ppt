@@ -9,7 +9,7 @@ install:
 
 # command to run tests
 script:
-    - python -c "print('test')" > build/2600.md
+    - python -c "import os;print os.environ['GITHUB_APIKEY']"
 
 before_deploy:
       # Set up git user name and tag this commit
