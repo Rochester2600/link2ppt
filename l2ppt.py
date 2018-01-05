@@ -16,6 +16,7 @@ import time
 import unicodedata
 
 #from sumy.parsers.html import HtmlParser
+import nltk.data
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer as Summarizer
@@ -35,10 +36,8 @@ try:
 except:
     print("No Instapaper support")
 import urllib2
-try:
-    from BeautifulSoup import BeautifulSoup
-except:
-    print("Missing beautifulsoup module")
+from bs4 import BeautifulSoup
+
 
 
 
@@ -108,6 +107,7 @@ def build_remarks(content, path):
 def desperate_summarizer(content):
     """ Sumy implementation that tries to guess
     what the content means """
+    return []
     LANGUAGE = "english"
     SENTENCES_COUNT = 5
     parser = PlaintextParser.from_string(content, Tokenizer(LANGUAGE))
@@ -126,7 +126,14 @@ def desperate_summarizer(content):
 
 def lazy_summarizer(content):
     """Take the first 8 sentences"""
-    highlights = [re.sub('[\t|\n]','', x[:250].strip(' \t\n\r')) for x in content.split('. ')[:8]]
+    #highlights = [re.sub('[\t|\n]','', x[:250].strip(' \t\n\r')) for x in content.split('. ')[:8]]
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    content = BeautifulSoup(content).get_text()
+    highlights = tokenizer.tokenize(content)[:8]
+    print('-'*20)
+    print(content)
+    print('-'*20)
+    print(highlights)
     return highlights
 
 
@@ -151,24 +158,27 @@ def get_instapaper(creds, full=False):
     # Only get the last 22 days
     if not full:
         days = 22 * 60 * 60 * 24
-        content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
+        #content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
+        content = list(s for s in links if s["time"] > time.time() - 2592000)  # 30 days
+        print("Found %s articles" % len(content))
     else:
         content = list(s for s in links)
 
     for indx, line in enumerate(content):
-        if not line["highlights"]:
+        #if not line["highlights"]: ## TODO missing what do do if there are highlights
+        if True:
             logging.debug("No highlights found. adding some")
-            #print("line[bookmarkid]= %s" % line["bookmark_id"])
+            print("line[bookmarkid]= %s" % line["bookmark_id"])
             text = ilink.gettext(line["bookmark_id"])
             #text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
             # this randomly choosing how to summarize. Great
-	    if content[indx]["summarizer"] == "lazy" or bool(random.getrandbits(1)):
+            if content[indx]["summarizer"] == "lazy" or bool(random.getrandbits(1)):
 	       content[indx]["highlights"] = lazy_summarizer(text)
                #content[indx]["highlights"].append("LAZYBOT")
                #print("used the lazy summarizer")
-	    elif content[indx]["summarizer"] == "special":
+            elif content[indx]["summarizer"] == "special":
 	       content[indx]["highlights"] = "todo"
-	    else:
+            else:
 	       #content[indx]["highlights"] = desperate_summarizer(text)
                #content[indx]["highlights"] = honest_summarizer(text)
                content[indx]["highlights"] = lazy_summarizer(text)

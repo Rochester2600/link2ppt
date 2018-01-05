@@ -16,6 +16,8 @@ __BASE__ = "https://www.instapaper.com"
 __API_VERSION__ = "1.1"
 __ENDPOINT__ = __BASE__ + "/api/" + __API_VERSION__ + "/"
 
+logging.basicConfig(level="DEBUG")
+
 class Instalink:
     def __init__(self, creds):
         self.ckey = creds[0]
