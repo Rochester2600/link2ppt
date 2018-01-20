@@ -22,7 +22,8 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer as Summarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
-from HTMLParser import HTMLParser
+#from HTMLParser import HTMLParser  # works in python2
+from html.parser import HTMLParser
 import random
 import os
 
@@ -35,7 +36,7 @@ try:
     import instalink
 except:
     print("No Instapaper support")
-import urllib2
+#import urllib2
 from bs4 import BeautifulSoup
 
 
@@ -45,9 +46,9 @@ from bs4 import BeautifulSoup
 OUTPUT = ""
 CREDS = "./creds"
 LAZYLIST = [
-	"slashdot.org",
-	]
-TESTMODE = False
+    "slashdot.org",
+    ]
+TESTMODE = True
 
 
 def main():
@@ -83,10 +84,14 @@ def main():
     else:
         creds = []
         full = False
-        creds.append(os.environ['INSTA1'])
-        creds.append(os.environ['INSTA2'])
-        creds.append(os.environ['INSTA3'])
-        creds.append(os.environ['INSTA4'])
+        try: 
+            creds.append(os.environ['INSTA1'])
+            creds.append(os.environ['INSTA2'])
+            creds.append(os.environ['INSTA3'])
+            creds.append(os.environ['INSTA4'])
+        except: 
+            print("Missing INSTA[1-4] env vars")
+            sys.exit()
         content = get_instapaper(creds, full)
 
     build_remarks(content, 'build/2600.md')
@@ -98,7 +103,8 @@ def build_remarks(content, path):
     output = r.build()
     ### Convert from unstripped unicode shit
     #re.sub('<[^<]+?>', '', text)
-    output = unicodedata.normalize('NFKD', output).encode('ascii', 'ignore')
+    #output = unicodedata.normalize('NFKD', output).encode('ascii', 'ignore') ## python2
+    #output = output.decode("utf-8", "backslashreplace")
     cleanoutput = teh_security(output)
     f = open(path, 'w')
     f.writelines(cleanoutput)
@@ -173,13 +179,13 @@ def get_instapaper(creds, full=False):
             #text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
             # this randomly choosing how to summarize. Great
             if content[indx]["summarizer"] == "lazy" or bool(random.getrandbits(1)):
-	       content[indx]["highlights"] = lazy_summarizer(text)
+               content[indx]["highlights"] = lazy_summarizer(text)
                #content[indx]["highlights"].append("LAZYBOT")
                #print("used the lazy summarizer")
             elif content[indx]["summarizer"] == "special":
-	       content[indx]["highlights"] = "todo"
+               content[indx]["highlights"] = "todo"
             else:
-	       #content[indx]["highlights"] = desperate_summarizer(text)
+           #content[indx]["highlights"] = desperate_summarizer(text)
                #content[indx]["highlights"] = honest_summarizer(text)
                content[indx]["highlights"] = lazy_summarizer(text)
                #content[indx]["highlights"].append("SUMYBOT9000")
@@ -187,54 +193,65 @@ def get_instapaper(creds, full=False):
     return content
 
 def teh_security(badness):
-    s = Stripper()
-    s.feed(badness)
-    goodness = s.get_data()
+    #s = Stripper()
+    # try: 
+    #     s.feed(badness)
+    # except:
+    #     print("Teh Security Failed!")
+    #     print(badness)
+    #     sys.exit()
+    #goodness = s.get_data()
+    #print("Before: \n\n%s" % badness)
+    #goodness = Stripper3(badness)
+    #print("After: \n\n%s" % goodness)
+    goodness = badness  # yup I did that. 
+
+    
     return goodness
 
 
-def get_title(url):
-    try:
-        # 3s timeout
-        f = urllib2.urlopen(url, tmeout=3000)
-        soup = BeautifulSoup(f)
-        f.close()
+# def get_title(url):
+#     try:
+#         # 3s timeout
+#         f = urllib2.urlopen(url, tmeout=3000)
+#         soup = BeautifulSoup(f)
+#         f.close()
 
-        if soup.title.string:
-            logging.debug("Title found as: %s" % soup.title.string)
-            return soup.title.string
-        else:
-            return "No title found"
-    except:
-        logging.error("URL: %s had an error" % url)
-        return "Blank"
+#         if soup.title.string:
+#             logging.debug("Title found as: %s" % soup.title.string)
+#             return soup.title.string
+#         else:
+#             return "No title found"
+#     except:
+#         logging.error("URL: %s had an error" % url)
+#         return "Blank"
 
 
-def parse_csv(file):
-    # is csv file?
-    #csvobj = []
-    with open(file, 'rb') as csvfile:
-        urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
-        content = []
-        for row in urllist:
-            ## If url TODO
-            record = {}
-            record["url"] = row[0]
-            try:
-                record["author"] = row[1]
-            except IndexError:
-                record["author"] = None
+# def parse_csv(file):
+#     # is csv file?
+#     #csvobj = []
+#     with open(file, 'rb') as csvfile:
+#         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
+#         content = []
+#         for row in urllist:
+#             ## If url TODO
+#             record = {}
+#             record["url"] = row[0]
+#             try:
+#                 record["author"] = row[1]
+#             except IndexError:
+#                 record["author"] = None
 
-            try:
-                record["date"] = row[2]
-            except IndexError:
-                record["date"] = None
-            record["title"] = get_title(row[0])
+#             try:
+#                 record["date"] = row[2]
+#             except IndexError:
+#                 record["date"] = None
+#             record["title"] = get_title(row[0])
 
-            ## add to slide
-            content.append(record)
-            #add_slide(record)
-        return content
+#             ## add to slide
+#             content.append(record)
+#             #add_slide(record)
+#         return content
 
 
 
@@ -247,6 +264,11 @@ class Stripper(HTMLParser):
         self.fed.append(d)
     def get_data(self):
         return ''.join(self.fed)
+
+def Stripper3(badness):
+    import string
+    printable = set(string.printable)
+    filter(lambda x: x in printable, badness)        
 
 if __name__ == '__main__':
     # init main
