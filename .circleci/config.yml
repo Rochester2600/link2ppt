@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3
+      - image: circleci/python:3.7
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -30,8 +30,8 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            pip install pipenv
-            pipenv install
+            pip3 install pipenv
+            pipenv --three install
             
 
       - save_cache:
@@ -47,8 +47,7 @@ jobs:
       - run:
           name: run tests
           command: |
-            . venv/bin/activate
-            python l2ppt.py
+            pipenv run l2ppt.py
 
       - store_artifacts:
           path: test-reports
