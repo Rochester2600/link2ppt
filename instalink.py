@@ -144,6 +144,7 @@ class Instalink:
 
         links = []
         for b in r["bookmarks"]:
+            logging.debug("Found new bookmark")
             link = {}
             link["bookmark_id"] = b["bookmark_id"]
             link["title"] = b["title"]
@@ -156,38 +157,38 @@ class Instalink:
                 h["text"] for h in r["highlights"] if h["bookmark_id"] == b["bookmark_id"]
                 )
             link["highlights"] = highlights
-        ## Choose a summarizer that best fits the content
-        ## ie slashdot can use lazy
-        import tldextract
-        link["domain"] = tldextract.extract(link["url"])
-        summarize_lazy = [
-        "slashdot.org",
-        ]
-        summarize_special = []
-        if link["domain"] in summarize_lazy:
-            link["summarizer"] = "lazy"
-        elif link["domain"] in summarize_special:
-            link["summarizer"] = "special"
-        else:
-            link["summarizer"] = "default"
-        ## Categorize content
-        ## TODO search through highlights too
-        fuckit = True  # screw this. It just confuses everyone
-        if not fuckit:
-            if any(x in link["title"].lower() for x in l_tor):
-                link["category"] = "Tor"
-            elif any(x in link["title"].lower() for x in l_mobile):
-                link["category"] = "Mobile"
-            elif any(x in link["title"].lower() for x in l_infosec):
-                link["category"] = "Infosec"
-            elif any(x in link["title"].lower() for x in l_dark):
-                link["category"] = "Dark"
+            ## Choose a summarizer that best fits the content
+            ## ie slashdot can use lazy
+            import tldextract
+            link["domain"] = tldextract.extract(link["url"])
+            summarize_lazy = [
+            "slashdot.org",
+            ]
+            summarize_special = []
+            if link["domain"] in summarize_lazy:
+                link["summarizer"] = "lazy"
+            elif link["domain"] in summarize_special:
+                link["summarizer"] = "special"
             else:
-                link["category"] = "Unknown"
-        else:
-                link["category"] = "FuckItMode_Enabled"
-        logging.debug(link)
-        links.append(link)
+                link["summarizer"] = "default"
+            ## Categorize content
+            ## TODO search through highlights too
+            fuckit = True  # screw this. It just confuses everyone
+            if not fuckit:
+                if any(x in link["title"].lower() for x in l_tor):
+                    link["category"] = "Tor"
+                elif any(x in link["title"].lower() for x in l_mobile):
+                    link["category"] = "Mobile"
+                elif any(x in link["title"].lower() for x in l_infosec):
+                    link["category"] = "Infosec"
+                elif any(x in link["title"].lower() for x in l_dark):
+                    link["category"] = "Dark"
+                else:
+                    link["category"] = "Unknown"
+            else:
+                    link["category"] = "FuckItMode_Enabled"
+            logging.debug(link)
+            links.append(link)
 
         links.sort(key=lambda x:x["category"])
         return(links)

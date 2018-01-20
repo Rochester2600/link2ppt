@@ -161,6 +161,7 @@ def get_instapaper(creds, full=False):
     ilink.login()
     il = ilink.getlinks()
     links = ilink.handlelinks(il)
+    print("Lenght of links: %s" % links)
     # Only get the last 22 days
     if not full:
         days = 22 * 60 * 60 * 24
