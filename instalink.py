@@ -16,7 +16,7 @@ __BASE__ = "https://www.instapaper.com"
 __API_VERSION__ = "1.1"
 __ENDPOINT__ = __BASE__ + "/api/" + __API_VERSION__ + "/"
 
-logging.basicConfig(level="DEBUG")
+#logging.basicConfig(level="DEBUG")
 
 class Instalink:
     def __init__(self, creds):
@@ -170,24 +170,24 @@ class Instalink:
             link["summarizer"] = "special"
         else:
             link["summarizer"] = "default"
-            ## Categorize content
-            ## TODO search through highlights too
-            fuckit = True  # screw this. It just confuses everyone
-            if not fuckit:
-                if any(x in link["title"].lower() for x in l_tor):
-                    link["category"] = "Tor"
-                elif any(x in link["title"].lower() for x in l_mobile):
-                    link["category"] = "Mobile"
-                elif any(x in link["title"].lower() for x in l_infosec):
-                    link["category"] = "Infosec"
-                elif any(x in link["title"].lower() for x in l_dark):
-                    link["category"] = "Dark"
-                else:
-                    link["category"] = "Unknown"
+        ## Categorize content
+        ## TODO search through highlights too
+        fuckit = True  # screw this. It just confuses everyone
+        if not fuckit:
+            if any(x in link["title"].lower() for x in l_tor):
+                link["category"] = "Tor"
+            elif any(x in link["title"].lower() for x in l_mobile):
+                link["category"] = "Mobile"
+            elif any(x in link["title"].lower() for x in l_infosec):
+                link["category"] = "Infosec"
+            elif any(x in link["title"].lower() for x in l_dark):
+                link["category"] = "Dark"
+            else:
+                link["category"] = "Unknown"
             else:
                 link["category"] = "FuckItMode_Enabled"
-            logging.debug(link)
-            links.append(link)
+        logging.debug(link)
+        links.append(link)
 
         links.sort(key=lambda x:x["category"])
         return(links)
