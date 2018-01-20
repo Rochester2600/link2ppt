@@ -30,13 +30,13 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            pip3 install pipenv
+            pip3 --user install pipenv
             pipenv --three install
             
 
       - save_cache:
           paths:
-            - ./venv
+            - ~/.cache
           key: v1-dependencies-{{ checksum "Pipfile" }}
         
       # run tests!
