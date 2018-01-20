@@ -33,13 +33,13 @@ jobs:
           name: install dependencies
           command: |
             pip3 install pipenv --user
-            echo $PATH
             pipenv --three install
             
 
       - save_cache:
           paths:
             - ~/.cache
+            - ~/nltk_data
           key: v1-dependencies-{{ checksum "Pipfile" }}
         
       # run tests!
@@ -50,9 +50,73 @@ jobs:
       - run:
           name: run tests
           command: |
+            pipenv run python l2ppt.py -t
+
+      - store_artifacts:
+          path: build/2600.md
+          destination: build/2600.md
+
+  deploy:
+    docker:
+      # specify the version you desire here
+      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      - image: circleci/python:3
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Pipfile" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: echo 'export PATH="$PATH:/home/circleci/.local/bin"' >> $BASH_ENV
+      - run: cat $BASH_ENV
+      - run:
+          name: install dependencies
+          command: |
+            pip3 install pipenv --user
+            pipenv --three install
+            
+
+      - save_cache:
+          paths:
+            - ~/.cache
+          key: v1-dependencies-{{ checksum "Pipfile" }}
+        
+      - run:
+          name: run tests
+          command: |
             pipenv run python l2ppt.py
 
       - store_artifacts:
           path: build/2600.md
           destination: build/2600.md
-          
+
+workflows:
+  version: 2
+  nightly:
+    triggers:
+      - schedule:
+        cront: "0 18 * * *"
+        filters:
+          branches:
+            only:
+              - master
+    jobs:
+      - build
+      - deploy
+        requires:
+          - build
+        filters:
+          - branches:
+            only: master
