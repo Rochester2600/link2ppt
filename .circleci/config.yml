@@ -50,7 +50,7 @@ jobs:
       - run:
           name: run tests
           command: |
-            pipenv run l2ppt.py
+            pipenv run python l2ppt.py
 
       - store_artifacts:
           path: test-reports
