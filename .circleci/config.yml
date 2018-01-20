@@ -53,6 +53,6 @@ jobs:
             pipenv run python l2ppt.py
 
       - store_artifacts:
-          path: test-reports
-          destination: test-reports
+          path: build/2600.md
+          destination: build/2600.md
           

@@ -48,7 +48,7 @@ CREDS = "./creds"
 LAZYLIST = [
     "slashdot.org",
     ]
-TESTMODE = True
+TESTMODE = False
 
 
 def main():
