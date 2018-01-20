@@ -16,6 +16,8 @@ jobs:
       # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
+    environment:
+      - PATH: 
 
     steps:
       - checkout
@@ -27,13 +29,13 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+      - run: echo 'export PATH=~/.local/bin:$PATH' >> $BASH_ENV
       - run:
           name: install dependencies
           command: |
             pip3 install pipenv --user
-            set PATH=$PATH:~/.local/bin
             echo $PATH
-            ~/.local/bin/pipenv --three install
+            pipenv --three install
             
 
       - save_cache:
