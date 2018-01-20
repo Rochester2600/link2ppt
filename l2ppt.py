@@ -133,7 +133,12 @@ def desperate_summarizer(content):
 def lazy_summarizer(content):
     """Take the first 8 sentences"""
     #highlights = [re.sub('[\t|\n]','', x[:250].strip(' \t\n\r')) for x in content.split('. ')[:8]]
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    try: 
+        tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    except LookupError:
+        print("Missing Punkt NLTK data. Downloading now...")
+        nltk.download('punkt')
+        tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
     content = BeautifulSoup(content).get_text()
     highlights = tokenizer.tokenize(content)[:8]
     print('-'*20)
