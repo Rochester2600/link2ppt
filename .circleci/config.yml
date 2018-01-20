@@ -32,7 +32,8 @@ jobs:
           command: |
             pip3 install pipenv --user
             set PATH=$PATH:~/.local/bin
-            pipenv --three install
+            echo $PATH
+            ~/.local/bin/pipenv --three install
             
 
       - save_cache:
