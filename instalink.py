@@ -184,7 +184,7 @@ class Instalink:
                 link["category"] = "Dark"
             else:
                 link["category"] = "Unknown"
-            else:
+        else:
                 link["category"] = "FuckItMode_Enabled"
         logging.debug(link)
         links.append(link)
