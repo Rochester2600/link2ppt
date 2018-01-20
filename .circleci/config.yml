@@ -30,6 +30,7 @@ jobs:
           - v1-dependencies-
 
       - run: echo 'export PATH=~/.local/bin:$PATH' >> $BASH_ENV
+      - run: cat $BASH_ENV
       - run:
           name: install dependencies
           command: |
