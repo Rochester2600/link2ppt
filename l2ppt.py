@@ -9,13 +9,12 @@
 
 from __future__ import absolute_import
 from __future__ import division, print_function, unicode_literals
-import csv, argparse, subprocess
+import csv, argparse 
 import logging, sys
 import re
 import time
 import unicodedata
 
-#from sumy.parsers.html import HtmlParser
 import nltk.data
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
