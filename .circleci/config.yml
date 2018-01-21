@@ -94,7 +94,7 @@ jobs:
           key: v1-dependencies-{{ checksum "Pipfile" }}
         
       - run:
-          name: run tests
+          name: build slides
           command: |
             pipenv run python l2ppt.py
 
