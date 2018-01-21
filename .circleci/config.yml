@@ -107,10 +107,10 @@ workflows:
   nightly:
     triggers:
       - schedule:
-          cron: "0 18 * * *"
+          cron: "* * * * *"
           filters:
             branches:
-            only: master
+              only: master
     jobs:
       - build
       - deploy:
