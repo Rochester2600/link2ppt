@@ -52,9 +52,9 @@ jobs:
           command: |
             pipenv run python l2ppt.py -t
 
-      - store_artifacts:
-          path: build/2600.md
-          destination: build/2600.md
+      #- store_artifacts:
+      #    path: build/2600.md
+      #    destination: build/2600.md
 
   deploy:
     docker:
@@ -107,7 +107,7 @@ workflows:
   nightly:
     triggers:
       - schedule:
-          cron: "*/3 * * * *"
+          cron: "0 18 * * *"
           filters:
             branches:
               only: master
