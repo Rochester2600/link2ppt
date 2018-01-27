@@ -41,19 +41,14 @@ jobs:
             - ~/nltk_data
           key: v1-dependencies-{{ checksum "Pipfile" }}
         
-      # run tests!
-      # this example uses Django's built-in test-runner
-      # other common Python testing frameworks include pytest and nose
-      # https://pytest.org
-      # https://nose.readthedocs.io
       - run:
           name: run tests
           command: |
             pipenv run python l2ppt.py -t
 
-      #- store_artifacts:
-      #    path: build/2600.md
-      #    destination: build/2600.md
+      - store_artifacts:
+          path: build/2600.md
+          destination: build/2600.md
 
   production:
     docker:
@@ -103,8 +98,8 @@ jobs:
 
   deploy:
     docker:
-         -image: circleci/python:2.7
-         working_directory: ~/repo
+      -image: circleci/python:2
+    working_directory: ~/repo
 
     steps:
       - checkout
@@ -117,12 +112,6 @@ jobs:
           - v1-dependencies-
 
       - run: echo 'export PATH="$PATH:/home/circleci/.local/bin"' >> $BASH_ENV
-      - run: cat $BASH_ENV
-        #- run:
-        #  name: install dependencies
-        #  command: |
-        #    pip3 install pipenv --user
-        #    pipenv --three install
       - run:
           name: fucking gsutil install
           command: |
@@ -141,6 +130,7 @@ workflows:
   commit:
     jobs:
       - build
+      - deploy
   nightly:
     triggers:
       - schedule:
@@ -150,6 +140,7 @@ workflows:
               only: master
     jobs:
       - build
+      - production
       - deploy:
           requires:
             - build
