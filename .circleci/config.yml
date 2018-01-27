@@ -95,13 +95,13 @@ jobs:
       - store_artifacts:
           path: build/2600.md
           destination: build/2600.md
-  # deploy:
-  #   docker:
-  #     -image: circleci/python:2
-  #   working_directory: ~/repo
+  deploy:
+    docker:
+      -image: circleci/python:2
+    working_directory: ~/repo
 
-  #   steps:
-  #     - checkout
+    steps:
+      - checkout
 
   #     # Download and cache dependencies
   #     - restore_cache:
