@@ -46,9 +46,12 @@ jobs:
           command: |
             pipenv run python l2ppt.py -t
 
-      - store_artifacts:
-          path: build/2600.md
-          destination: build/2600.md
+      - persist_to_workspace: 
+          root: /home/circleci
+
+      # - store_artifacts:
+      #     path: build/2600.md
+      #     destination: build/2600.md
 
   production:
     docker:
@@ -98,23 +101,26 @@ jobs:
   deploy:
     docker:
       - image: circleci/python:3
-    working_directory: ~/repo
+    #working_directory: ~/
 
     steps:
-      - checkout
+      #- checkout
 
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "Pipfile" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "Pipfile" }}
+      #     # fallback to using the latest cache if no exact match is found
+      #     - v1-dependencies-
+      - attach_workspace:
+          at: /home/circlci
 
       - run: echo 'export PATH="$PATH:/home/circleci/.local/bin"' >> $BASH_ENV
+      - run: cd ~/repo
       - run:
           name: fucking gsutil install
           command: |
-            pip2 install gsutil --user
+            pip install gsutil --user
 
       - run:
           name: run deploy script
