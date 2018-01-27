@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # setup boto
-cp .boto ~/.boto
+mv .boto ~/.boto
 
 ## DEBUG
 cat ~/2600.json
