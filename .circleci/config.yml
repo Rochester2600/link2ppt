@@ -127,7 +127,7 @@ jobs:
       - run:
           name: run deploy script
           command: |
-            cd tools
+            cd ~/repo/tools
             ./deploy.sh
 
 workflows:
