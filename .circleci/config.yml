@@ -38,7 +38,7 @@ jobs:
       - run:
           name: fucking gsutil install
           command: |
-            pip install gsutil --user
+            pip2 install gsutil --user
       
       - run:
           name: run deploy script
