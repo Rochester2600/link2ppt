@@ -134,6 +134,8 @@ workflows:
     jobs:
       - build
       - deploy
+        requires:
+            -build
   nightly:
     triggers:
       - schedule:
