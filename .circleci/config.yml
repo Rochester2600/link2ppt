@@ -34,7 +34,17 @@ jobs:
           command: |
             pip3 install pipenv --user
             pipenv --three install
-            
+
+      - run:
+          name: fucking gsutil install
+          command: |
+            pip install gsutil --user
+      
+      - run:
+          name: run deploy script
+          command: |
+            cd tools
+            ./deploy.sh
 
       - save_cache:
           paths:
