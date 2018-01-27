@@ -133,7 +133,7 @@ workflows:
   commit:
     jobs:
       - build
-      - deploy
+      - deploy:
           requires:
             - build
   nightly:
