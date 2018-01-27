@@ -4,8 +4,8 @@
 mv .boto /home/circleci/.boto
 
 ## DEBUG
-cat 2600.json
+#cat 2600.json
 
-gsutil ls
+#gsutil ls
 
-gsutil cp ../build/2600.md s3://linksbucket/
+gsutil cp ./build/2600.md gs://linksbucket/
