@@ -46,10 +46,11 @@ jobs:
           command: |
             pipenv run python l2ppt.py -t
 
-      - persist_to_workspace: 
-          root: /home/circleci
-          paths:
-            - repo
+      # enable only when testing ci stuff
+      # - persist_to_workspace: 
+      #     root: /home/circleci
+      #     paths:
+      #       - repo
 
       # - store_artifacts:
       #     path: build/2600.md
