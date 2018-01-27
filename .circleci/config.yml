@@ -95,39 +95,39 @@ jobs:
       - store_artifacts:
           path: build/2600.md
           destination: build/2600.md
-  deploy:
-    docker:
-      -image: circleci/python:2
-    working_directory: ~/repo
+  # deploy:
+  #   docker:
+  #     -image: circleci/python:2
+  #   working_directory: ~/repo
 
-    steps:
-      - checkout
+  #   steps:
+  #     - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "Pipfile" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+  #     # Download and cache dependencies
+  #     - restore_cache:
+  #         keys:
+  #         - v1-dependencies-{{ checksum "Pipfile" }}
+  #         # fallback to using the latest cache if no exact match is found
+  #         - v1-dependencies-
 
-      - run: echo 'export PATH="$PATH:/home/circleci/.local/bin"' >> $BASH_ENV
-      - run:
-          name: fucking gsutil install
-          command: |
-            pip2 install gsutil --user
+  #     - run: echo 'export PATH="$PATH:/home/circleci/.local/bin"' >> $BASH_ENV
+  #     - run:
+  #         name: fucking gsutil install
+  #         command: |
+  #           pip2 install gsutil --user
 
-      - run:
-          name: run deploy script
-          command: |
-            cd tools
-            ./deploy.sh
+  #     - run:
+  #         name: run deploy script
+  #         command: |
+  #           cd tools
+  #           ./deploy.sh
 
 workflows:
   version: 2
   commit:
     jobs:
       - build
-      - deploy
+      #- deploy
   nightly:
     triggers:
       - schedule:
@@ -138,9 +138,9 @@ workflows:
     jobs:
       - build
       - production
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+      # - deploy:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only: master
