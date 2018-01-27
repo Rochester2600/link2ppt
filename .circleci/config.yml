@@ -27,6 +27,12 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+      - run:
+          name: fucking gsutil install
+          command: |
+            pip2 install gsutil --user
+
+
       - run: echo 'export PATH="$PATH:/home/circleci/.local/bin"' >> $BASH_ENV
       - run: cat $BASH_ENV
       - run:
@@ -35,11 +41,6 @@ jobs:
             pip3 install pipenv --user
             pipenv --three install
 
-      - run:
-          name: fucking gsutil install
-          command: |
-            pip2 install gsutil --user
-      
       - run:
           name: run deploy script
           command: |
