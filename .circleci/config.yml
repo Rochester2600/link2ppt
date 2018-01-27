@@ -128,6 +128,7 @@ jobs:
           name: run deploy script
           command: |
             cd ~/repo/tools
+            base64 -d $GCS > ~/2600.json
             ./deploy.sh
 
 workflows:
