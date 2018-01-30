@@ -143,11 +143,11 @@ workflows:
   commit:
     jobs:
       - build
-      #- production
+      - production
       - deploy:
           requires:
             - build
-            #- production  # test
+            - production  # test
   nightly:
     triggers:
       - schedule:
