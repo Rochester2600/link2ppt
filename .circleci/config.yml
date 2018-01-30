@@ -142,11 +142,11 @@ workflows:
   version: 2
   commit:
     jobs:
-      - build
+      #- build
       - production
       - deploy:
           requires:
-            - build
+            #- build
             - production  # test
   nightly:
     triggers:
