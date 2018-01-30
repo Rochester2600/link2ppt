@@ -8,4 +8,4 @@ mv .boto /home/circleci/.boto
 
 #gsutil ls
 
-gsutil cp -p ../build/* gs://linksbucket/
+gsutil cp -p ../build/* gs://links.rochester2600.com/
