@@ -174,7 +174,7 @@ def get_instapaper(creds, full=False):
         last = t - relativedelta(months=-1)
         ff = first_friday_finder(last.year, last.month)
         timesinceff = ff - t  #  The difference between today and last FF
-        
+        logging.info("Seconds since last first friday: %s" % timesinceff)
         #days = 22 * 60 *xzxz* 24
         #content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
         content = list(s for s in links if s["time"] > time.time() - 2592000)  # 30 days
