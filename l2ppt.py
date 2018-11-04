@@ -211,7 +211,7 @@ def first_friday_finder(year, month):
     monthcal = c.monthdatescalendar(year, month)
     firstfriday = [day for week in monthcal for day in week if day.weekday() == calendar.FRIDAY and day.month 
 == month][0]
-    print(firstfriday)
+    firstfriday = datetime.datetime.combine(firstfriday, datetime.datetime.min.time())
     firstfriday = firstfriday.replace(hour=7,minute=00)
     return firstfriday
 
