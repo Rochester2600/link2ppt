@@ -173,13 +173,13 @@ def get_instapaper(creds, full=False):
         t = datetime.datetime.today()
         last = t - relativedelta(months=-1)
         ff = first_friday_finder(last.year, last.month)
-        timesinceff = ff - t  #  The difference between today and last FF
+        timesinceff = t - ff  #  The difference between today and last FF
         logging.info("Seconds since last first friday: %s" % timesinceff)
         #days = 22 * 60 *xzxz* 24
         #content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
         #content = list(s for s in links if s["time"] > time.time() - 2592000)  # 30 days
         last_ff_date = time.time() + timesinceff.total_seconds()
-        content = list(s for s in links if s["time"] > time.time() - timesinceff.seconds)
+        content = list(s for s in links if s["time"] > last_ff_date)
         logging.info("Found %s articles" % len(content))
     else:
         content = list(s for s in links)
@@ -213,7 +213,7 @@ def first_friday_finder(year, month):
     firstfriday = [day for week in monthcal for day in week if day.weekday() == calendar.FRIDAY and day.month 
 == month][0]
     firstfriday = datetime.datetime.combine(firstfriday, datetime.datetime.min.time())
-    firstfriday = firstfriday.replace(hour=23,minute=59)
+    firstfriday = firstfriday.replace(hour=22,minute=00)
     return firstfriday
 
 def teh_security(badness):
