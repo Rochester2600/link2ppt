@@ -212,7 +212,7 @@ def first_friday_finder(year, month):
     firstfriday = [day for week in monthcal for day in week if day.weekday() == calendar.FRIDAY and day.month 
 == month][0]
     firstfriday = datetime.datetime.combine(firstfriday, datetime.datetime.min.time())
-    firstfriday = firstfriday.replace(hour=7,minute=00)
+    firstfriday = firstfriday.replace(hour=23,minute=59)
     return firstfriday
 
 def teh_security(badness):
