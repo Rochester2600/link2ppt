@@ -171,14 +171,12 @@ def get_instapaper(creds, full=False):
     # Only get the last 22 days
     if not full:
         t = datetime.datetime.today()
-        last = t - relativedelta(months=-1)
-        ff = first_friday_finder(last.year, last.month)
+        last = t - relativedelta(months=-1)  # get last month from now
+        ff = first_friday_finder(last.year, last.month)  # find last month's FF
         timesinceff = t - ff  #  The difference between today and last FF
         logging.info("Seconds since last first friday: %s" % timesinceff)
-        #days = 22 * 60 *xzxz* 24
-        #content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
-        #content = list(s for s in links if s["time"] > time.time() - 2592000)  # 30 days
         last_ff_date = time.time() + timesinceff.total_seconds()
+        logging.info("Last FF was found to be: %s" % last_ff_date)
         content = list(s for s in links if s["time"] > last_ff_date)
         logging.info("Found %s articles" % len(content))
     else:
@@ -232,51 +230,6 @@ def teh_security(badness):
 
     
     return goodness
-
-
-# def get_title(url):
-#     try:
-#         # 3s timeout
-#         f = urllib2.urlopen(url, tmeout=3000)
-#         soup = BeautifulSoup(f)
-#         f.close()
-
-#         if soup.title.string:
-#             logging.debug("Title found as: %s" % soup.title.string)
-#             return soup.title.string
-#         else:
-#             return "No title found"
-#     except:
-#         logging.error("URL: %s had an error" % url)
-#         return "Blank"
-
-
-# def parse_csv(file):
-#     # is csv file?
-#     #csvobj = []
-#     with open(file, 'rb') as csvfile:
-#         urllist = csv.reader(csvfile, delimiter=',', quotechar='|')
-#         content = []
-#         for row in urllist:
-#             ## If url TODO
-#             record = {}
-#             record["url"] = row[0]
-#             try:
-#                 record["author"] = row[1]
-#             except IndexError:
-#                 record["author"] = None
-
-#             try:
-#                 record["date"] = row[2]
-#             except IndexError:
-#                 record["date"] = None
-#             record["title"] = get_title(row[0])
-
-#             ## add to slide
-#             content.append(record)
-#             #add_slide(record)
-#         return content
-
 
 
 class Stripper(HTMLParser):
