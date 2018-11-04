@@ -13,6 +13,7 @@ import csv, argparse
 import logging, sys
 import re
 import time
+import datetime
 import unicodedata
 
 import nltk.data
@@ -174,7 +175,7 @@ def get_instapaper(creds, full=False):
         ff = first_friday_finder(last.year, last.month)
         timesinceff = ff - t  #  The difference between today and last FF
         
-        days = 22 * 60 *xzxz* 24
+        #days = 22 * 60 *xzxz* 24
         #content = list(s for s in links if s["time"] > time.time() - 1728000)  # 20 days
         content = list(s for s in links if s["time"] > time.time() - 2592000)  # 30 days
         content = list(s for s in links if s["time"] > time.time() - timesinceff.seconds)
